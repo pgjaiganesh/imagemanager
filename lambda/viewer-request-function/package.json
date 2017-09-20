@@ -1,0 +1,8 @@
+{
+  "name": "viewer-request-function",
+  "version": "1.0.0",
+  "description": "Lambda@Edge function to modify URI",
+  "main": "index.js",
+  "author": "JaiGanesh",
+  "license": "ISC"
+}

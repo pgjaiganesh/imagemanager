@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  myDistribution:
+    Type: 'AWS::CloudFront::Distribution'
+    Properties:
+      DistributionConfig:
+        Origins:
+        - DomainName: S3_ORIGIN_URL
+          Id: myCustomOrigin
+          CustomOriginConfig:
+            HTTPPort: '80'
+            HTTPSPort: '443'
+        Enabled: 'true'
+        Comment: Distribution for image resize
+        DefaultRootObject: index.html
+        DefaultCacheBehavior:
+          TargetOriginId: myCustomOrigin
+          SmoothStreaming: 'true'
+          ForwardedValues:
+            QueryString: 'true'
+            Cookies:
+              Forward: all
+          ViewerProtocolPolicy: https-only
+          LambdaFunctionAssociations:
+            Quantity: 2
+            Items:
+              LambdaFunctionAssociation:
+                EventType: origin-request
+                LambdaFunctionARN: arn:aws:lambda:us-east-1:444603092185:function:ImageManager-ViewerRequestFunction-A7XZEDUA6100:3
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: 'true'

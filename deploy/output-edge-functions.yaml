@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: 2010-09-09
+Outputs:
+  OriginRequestFunctionArn:
+    Value:
+      Fn::GetAtt:
+      - OriginRequestFunction
+      - Arn
+  ViewerRequestFunctionArn:
+    Value:
+      Fn::GetAtt:
+      - ViewerRequestFunction
+      - Arn
+Parameters:
+  IMAGEBUCKET:
+    Type: String
+Resources:
+  OriginRequestFunction:
+    Properties:
+      CodeUri: s3://temp-code-imageresize-fd8359b29cd1aae9/09c24e0f0a1e2f7d3c74935cb8119acf
+      Handler: index.handler
+      MemorySize: 128
+      Policies:
+        Statement:
+        - Action:
+          - s3:GetObject
+          - s3:ListBucket
+          Effect: Allow
+          Resource:
+            Fn::Sub: arn:aws:s3:::ganeshjiimageresize/*
+      Role: arn:aws:iam::444603092185:role/service-role/edge_function
+      Runtime: nodejs6.10
+      Timeout: 3
+    Type: AWS::Serverless::Function
+  ViewerRequestFunction:
+    Properties:
+      CodeUri: s3://temp-code-imageresize-fd8359b29cd1aae9/2df91a5af3055b194390185530a17eba
+      Handler: index.handler
+      MemorySize: 128
+      Role: arn:aws:iam::444603092185:role/service-role/edge_function
+      Runtime: nodejs6.10
+      Timeout: 1
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31

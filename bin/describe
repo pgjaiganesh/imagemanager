@@ -1,0 +1,44 @@
+#!/bin/bash
+
+set -o errexit
+
+stack_name=ImageManager
+stack_name_cf=ImageManagerCF
+region="$(aws configure get region)"
+code_bucket_name="ganeshji-code-imageresize"
+image_bucket_name="ganeshjiimageresize"
+account_id="$(aws sts get-caller-identity --query Account --output text \
+  | xargs echo -n)"
+role="edge_function"
+
+set -o xtrace
+
+origin_request_function="$(aws cloudformation describe-stacks \
+  --stack-name $stack_name \
+  --output json \
+  --query 'Stacks[].Outputs[?OutputKey==`OriginRequestFunctionName`].OutputValue' --output text)"
+
+s3_origin_url="$(aws cloudformation describe-stacks \
+    --stack-name $stack_name \
+    --output json \
+    --query 'Stacks[].Outputs[?OutputKey==`BucketWebsiteUrl`].OutputValue' --output text)"
+
+s3_origin_url="$( echo $s3_origin_url | sed -e 's#^http://##')"
+
+sed -e "s/S3_ORIGIN_URL/${s3_origin_url}/g" -e "s/ACCOUNT_ID/${account_id}/g" \
+  cf.yaml > deploy/cf.yaml
+
+aws s3 mb "s3://${code_bucket_name}"
+
+aws cloudformation package \
+  --output-template-file=deploy/cf-output.yaml \
+  --template-file=deploy/cf.yaml \
+  --s3-bucket="${code_bucket_name}" \
+
+aws cloudformation deploy \
+  --template-file=deploy/cf-output.yaml \
+  --stack-name="${stack_name_cf}" \
+  --parameter-overrides BucketName="${image_bucket_name}" \
+  --capabilities=CAPABILITY_NAMED_IAM
+
+aws s3 rb --force "s3://${code_bucket_name}"

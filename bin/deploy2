@@ -1,0 +1,46 @@
+#!/bin/bash
+
+set -o errexit
+
+stack_name=ImageManager
+stack_name_ef=$stack_name-EdgeFunctions
+
+aws configure set default.region us-east-1
+
+region="$(aws configure get region)"
+account_id="$(aws sts get-caller-identity --query Account --output text \
+  | xargs echo -n)"
+
+set -o xtrace
+
+origin_request_function="$(aws cloudformation describe-stacks \
+  --stack-name $stack_name_ef \
+  --output json \
+  --query 'Stacks[].Outputs[?OutputKey==`OriginRequestFunctionArn`].OutputValue' --output text)"
+
+origin_request_function_arn="$(aws lambda publish-version --function-name $origin_request_function \
+--query 'FunctionArn')"
+
+viewer_request_function="$(aws cloudformation describe-stacks \
+  --stack-name $stack_name_ef \
+  --output json \
+  --query 'Stacks[].Outputs[?OutputKey==`ViewerRequestFunctionArn`].OutputValue' --output text)"
+
+viewer_request_function_arn="$(aws lambda publish-version --function-name $viewer_request_function \
+--query 'FunctionArn')"
+
+aws configure set default.region ap-south-1
+
+s3_origin_url="$(aws cloudformation describe-stacks \
+    --stack-name $stack_name \
+    --output json \
+    --query 'Stacks[].Outputs[?OutputKey==`BucketWebsiteUrl`].OutputValue' --output text)"
+
+s3_origin_url="$( echo $s3_origin_url | sed -e 's#^http://##')"
+
+sed -e "s/S3_ORIGIN_URL/${s3_origin_url}/g" \
+    -e "s/ORIGIN-REQUEST-FUNCTION-ARN/${origin_request_function_arn}/g" \
+    -e "s/VIEWER-REQUEST-FUNCTION-ARN/${viewer_request_function_arn}/g" \
+    cf1.json > deploy/cf1.json
+
+#aws cloudfront create-distribution --distribution-config file://${PWD}/deploy/cf1.json

@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  myDistribution:
+    Properties:
+      DistributionConfig:
+        Comment: Distribution for image resize
+        DefaultCacheBehavior:
+          ForwardedValues:
+            Cookies:
+              Forward: all
+            QueryString: 'true'
+          LambdaFunctionAssociations:
+            Items:
+              LambdaFunctionAssociation:
+                EventType: origin-request
+                LambdaFunctionARN: arn:aws:lambda:us-east-1:444603092185:function:ImageManager-ViewerRequestFunction-A7XZEDUA6100:3
+            Quantity: 2
+          SmoothStreaming: 'true'
+          TargetOriginId: myCustomOrigin
+          ViewerProtocolPolicy: https-only
+        DefaultRootObject: index.html
+        Enabled: 'true'
+        Origins:
+        - CustomOriginConfig:
+            HTTPPort: '80'
+            HTTPSPort: '443'
+          DomainName: imagemanager-ganeshjiimageresize-3cssilf7mibe.s3-website-us-east-1.amazonaws.com
+          Id: myCustomOrigin
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: 'true'
+    Type: AWS::CloudFront::Distribution

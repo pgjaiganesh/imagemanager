@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+
+  IMAGEBUCKET:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+
+  ImageBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref IMAGEBUCKET
+      PolicyDocument:
+        Statement:
+              Action:
+                - s3:GetObject
+              Effect: Allow
+              Principal: "*"
+              Resource: !Sub arn:aws:s3:::${IMAGEBUCKET}/*
+
+Outputs:
+  BucketWebsiteUrl:
+    Value: !GetAtt IMAGEBUCKET.WebsiteURL
+    Export:
+      Name: !Sub "${AWS::StackName}-BucketWebsiteUrl"
+
+  ImageBucket:
+    Value: !Ref IMAGEBUCKET
+    Export:
+      Name: !Sub "${AWS::StackName}-ImageBucket"

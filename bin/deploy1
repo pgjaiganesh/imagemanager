@@ -1,0 +1,62 @@
+#!/bin/bash
+
+set -o errexit
+
+stack_name=ImageManager
+stack_name_ef=$stack_name-EdgeFunctions
+
+aws configure set default.region ap-south-1
+
+code_bucket_name="temp-code-imageresize-$(openssl rand -hex 8)"
+image_bucket_name="ganeshjiimageresize"
+account_id="$(aws sts get-caller-identity --query Account --output text \
+  | xargs echo -n)"
+edge_function_role="edge_function"
+
+set -o xtrace
+
+aws cloudformation describe-stacks \
+  --stack-name "${stack_name}" \
+  --query Stacks[].Outputs \
+  --output table
+
+s3_image_bucket_arn="$(aws cloudformation describe-stacks \
+    --stack-name $stack_name \
+    --output json \
+    --query 'Stacks[].Outputs[?OutputKey==`ImageBucket`].OutputValue' --output text)"
+
+apigw_url="$(aws cloudformation describe-stacks \
+        --stack-name $stack_name \
+        --output json \
+        --query 'Stacks[].Outputs[?OutputKey==`APIGWUrl`].OutputValue' --output text)"
+
+echo "var config = module.exports = {image_bucket:\"$s3_image_bucket_arn\",apigw_url:\"$apigw_url\"}" > config.js
+
+zip -r ${PWD}/dist/origin-request-function.zip config.js
+
+aws configure set default.region us-east-1
+
+sed -e "s/EDGE_FUNCTION_ROLE/${edge_function_role}/g" -e "s/ACCOUNT_ID/${account_id}/g" \
+    -e "s/IMAGE_BUCKET/${image_bucket_name}/g" \
+    edge-functions.yaml > deploy/edge-functions.yaml
+
+code_bucket_name="temp-code-imageresize-$(openssl rand -hex 8)"
+aws s3 mb "s3://${code_bucket_name}"
+
+aws cloudformation package \
+  --output-template-file=deploy/output-edge-functions.yaml \
+  --template-file=deploy/edge-functions.yaml \
+  --s3-bucket="${code_bucket_name}" \
+
+aws cloudformation deploy \
+  --template-file=deploy/output-edge-functions.yaml \
+  --stack-name="${stack_name_ef}" \
+  --parameter-overrides IMAGEBUCKET="${image_bucket_name}" \
+  --capabilities=CAPABILITY_NAMED_IAM
+
+aws s3 rb --force "s3://${code_bucket_name}"
+
+aws cloudformation describe-stacks \
+  --stack-name "${stack_name_ef}" \
+  --query Stacks[].Outputs \
+  --output table

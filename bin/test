@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -o errexit
+
+stack_name=TestManager
+
+region="$(aws configure get region)"
+code_bucket_name="temp-code-imageresize-$(openssl rand -hex 8)"
+
+set -o xtrace
+
+sed -e "s/REGION/${region}/g" \
+  test.yaml > deploy/test.yaml
+
+aws s3 mb "s3://${code_bucket_name}"
+
+aws cloudformation package \
+  --output-template-file=deploy/output-test.yaml \
+  --template-file=deploy/test.yaml \
+  --s3-bucket="${code_bucket_name}" \
+
+aws cloudformation deploy \
+  --template-file=deploy/output-test.yaml \
+  --stack-name="${stack_name}" \
+  --capabilities=CAPABILITY_NAMED_IAM
+
+aws s3 rb --force "s3://${code_bucket_name}"
+
+aws cloudformation describe-stacks \
+  --stack-name "${stack_name}" \
+  --query Stacks[].Outputs \
+  --output table
