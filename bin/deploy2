@@ -3,6 +3,7 @@
 . ./bin/config
 
 aws configure set default.region $edge_function_region
+aws configure set preview.cloudfront true
 
 set -o xtrace
 
@@ -34,6 +35,7 @@ s3_origin_url="$( echo $s3_origin_url | sed -e 's#^http://##')"
 sed -e "s/S3_ORIGIN_URL/${s3_origin_url}/g" \
     -e "s/ORIGIN-REQUEST-FUNCTION-ARN/${origin_request_function_arn}/g" \
     -e "s/VIEWER-REQUEST-FUNCTION-ARN/${viewer_request_function_arn}/g" \
+    -e "s/UPDATE-TIME/$(date)/g" \
     cf1.json > deploy/cf1.json
 
-#aws cloudfront create-distribution --distribution-config file://${PWD}/deploy/cf1.json
+aws cloudfront create-distribution --distribution-config file://${PWD}/deploy/cf1.json

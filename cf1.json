@@ -1,5 +1,5 @@
 {
-  "CallerReference": "my-distribution-2017-09-20",
+  "CallerReference": "my-distribution-UPDATE-TIME",
   "Aliases": {
     "Quantity": 0
   },
@@ -42,6 +42,9 @@
     },
     "ViewerProtocolPolicy": "allow-all",
     "MinTTL": 3600,
+    "DefaultTTL": 86400,
+    "MaxTTL": 31536000,
+    "Compress": true,
     "LambdaFunctionAssociations": {
         "Quantity": 2,
         "Items": [

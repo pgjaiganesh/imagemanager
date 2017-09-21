@@ -1,5 +1,5 @@
 {
-  "CallerReference": "my-distribution-2017-09-20",
+  "CallerReference": "my-distribution-Thu Sep 21 13:05:13 IST 2017",
   "Aliases": {
     "Quantity": 0
   },
@@ -42,11 +42,14 @@
     },
     "ViewerProtocolPolicy": "allow-all",
     "MinTTL": 3600,
+    "DefaultTTL": 86400,
+    "MaxTTL": 31536000,
+    "Compress": true,
     "LambdaFunctionAssociations": {
         "Quantity": 2,
         "Items": [
             {
-              "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager-EdgeFunctions-OriginRequestFunction-12GKOCRCCCW03:10",
+              "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager-EdgeFunctions-OriginRequestFunction-12GKOCRCCCW03:11",
               "EventType": "origin-request"
             },
             {
