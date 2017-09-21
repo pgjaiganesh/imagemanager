@@ -31,6 +31,7 @@ exports.handler = (event, context, callback) => {
             method: 'HEAD'
         };
 
+
         http.get(options, (res) => {
                 console.log("Status code :%s",res.statusCode);
                 console.log("Time remaining1.1 :%s",context.getRemainingTimeInMillis());
