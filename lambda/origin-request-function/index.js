@@ -13,19 +13,22 @@ exports.handler = (event, context, callback) => {
     console.log("config %j",config);
     const BUCKET = config.image_bucket;
     const APIGW_URL = config.apigw_url+"?key=";
+    const HOSTNAME = config.image_bucket_url.replace("http://","");
 
-    console.log("Bucket %s",BUCKET);
+    console.log("Bucket :%s",BUCKET);
+    console.log("Hostname :%s",HOSTNAME);
 
     let key = request.uri.substring(1);
     if (request.uri.includes('images') == true) {
 
         console.log("Time remaining1 :%s",context.getRemainingTimeInMillis());
 
-        var path1 = "/"+config.image_bucket+request.uri;
+        //var path1 = "/"+config.image_bucket+request.uri;
+        var path1 = request.uri;
         console.log("s3 url :%s",path1);
 
         var options = {
-            hostname: 's3.ap-south-1.amazonaws.com',
+            hostname: HOSTNAME,
             path: path1,
             port: 80,
             method: 'HEAD'

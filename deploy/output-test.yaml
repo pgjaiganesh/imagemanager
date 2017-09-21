@@ -14,7 +14,27 @@ Outputs:
         Fn::Sub: ${AWS::StackName}-ImageBucket
     Value:
       Ref: IMAGEBUCKET
+  RoleArn:
+    Value:
+      Fn::GetAtt:
+      - EdgeLambdaRole
+      - Arn
 Resources:
+  EdgeLambdaRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+            - edgelambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Type: AWS::IAM::Role
   IMAGEBUCKET:
     Properties:
       AccessControl: PublicRead

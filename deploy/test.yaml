@@ -23,6 +23,23 @@ Resources:
               Principal: "*"
               Resource: !Sub arn:aws:s3:::${IMAGEBUCKET}/*
 
+  EdgeLambdaRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+                - "edgelambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+
 Outputs:
   BucketWebsiteUrl:
     Value: !GetAtt IMAGEBUCKET.WebsiteURL
@@ -33,3 +50,6 @@ Outputs:
     Value: !Ref IMAGEBUCKET
     Export:
       Name: !Sub "${AWS::StackName}-ImageBucket"
+
+  RoleArn:
+    Value: !GetAtt EdgeLambdaRole.Arn

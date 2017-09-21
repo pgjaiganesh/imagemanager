@@ -2,11 +2,23 @@ AWSTemplateFormatVersion: 2010-09-09
 
 Transform: AWS::Serverless-2016-10-31
 
-Parameters:
-  IMAGEBUCKET:
-    Type: String
-
 Resources:
+  EdgeLambdaRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+                - "edgelambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/service-role/"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 
   ViewerRequestFunction:
     Type: AWS::Serverless::Function
@@ -16,7 +28,7 @@ Resources:
       Runtime: nodejs6.10
       MemorySize: 128
       Timeout: 1
-      Role: arn:aws:iam::ACCOUNT_ID:role/service-role/EDGE_FUNCTION_ROLE
+      Role: !GetAtt EdgeLambdaRole.Arn
 
   OriginRequestFunction:
    Type: AWS::Serverless::Function
@@ -26,17 +38,12 @@ Resources:
      Runtime: nodejs6.10
      MemorySize: 128
      Timeout: 3
-     Role: arn:aws:iam::ACCOUNT_ID:role/service-role/EDGE_FUNCTION_ROLE
-     Policies:
-         Statement:
-           - Resource: !Sub arn:aws:s3:::IMAGE_BUCKET/*
-             Effect: Allow
-             Action:
-               - s3:GetObject
-               - s3:ListBucket
+     Role: !GetAtt EdgeLambdaRole.Arn
 
 Outputs:
   OriginRequestFunctionArn:
     Value: !GetAtt OriginRequestFunction.Arn
   ViewerRequestFunctionArn:
     Value: !GetAtt ViewerRequestFunction.Arn
+  RoleArn:
+    Value: !GetAtt EdgeLambdaRole.Arn
