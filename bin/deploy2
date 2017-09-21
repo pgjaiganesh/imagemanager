@@ -19,7 +19,7 @@ origin_request_function="$(aws cloudformation describe-stacks \
   --query 'Stacks[].Outputs[?OutputKey==`OriginRequestFunctionArn`].OutputValue' --output text)"
 
 origin_request_function_arn="$(aws lambda publish-version --function-name $origin_request_function \
---query 'FunctionArn')"
+--query 'FunctionArn' --output text)"
 
 viewer_request_function="$(aws cloudformation describe-stacks \
   --stack-name $stack_name_ef \
@@ -27,7 +27,7 @@ viewer_request_function="$(aws cloudformation describe-stacks \
   --query 'Stacks[].Outputs[?OutputKey==`ViewerRequestFunctionArn`].OutputValue' --output text)"
 
 viewer_request_function_arn="$(aws lambda publish-version --function-name $viewer_request_function \
---query 'FunctionArn')"
+--query 'FunctionArn' --output text)"
 
 aws configure set default.region ap-south-1
 
