@@ -1,26 +1,14 @@
 #!/bin/bash
 
-set -o errexit
+. ./bin/config
 
-stack_name=ImageManager
-stack_name_ef=ImageManagerEdgeFunctions
-
-aws configure set default.region ap-south-1
+aws configure set default.region $deployment_region
 region="$(aws configure get region)"
-
-code_bucket_name="temp-code-imageresize-$(openssl rand -hex 8)"
-image_bucket_name="ganeshjiimageresize"
-account_id="$(aws sts get-caller-identity --query Account --output text \
-  | xargs echo -n)"
-role="edge_function"
-
-set -o xtrace
 
 sed -e "s/REGION/${region}/g" -e "s/ACCOUNT_ID/${account_id}/g" \
   api-template.yaml > deploy/api.yaml
 
 sed -e "s/EDGE_FUNCTION_ROLE/${role}/g" -e "s/ACCOUNT_ID/${account_id}/g" \
-    -e "s/IMAGE_BUCKET/${image_bucket_name}/g" \
     image-resize.yaml > deploy/image-resize.yaml
 
 aws s3 mb "s3://${code_bucket_name}"

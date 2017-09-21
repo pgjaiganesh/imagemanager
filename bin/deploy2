@@ -1,15 +1,8 @@
 #!/bin/bash
 
-set -o errexit
+. ./bin/config
 
-stack_name=ImageManager
-stack_name_ef=$stack_name-EdgeFunctions
-
-aws configure set default.region us-east-1
-
-region="$(aws configure get region)"
-account_id="$(aws sts get-caller-identity --query Account --output text \
-  | xargs echo -n)"
+aws configure set default.region $edge_function_region
 
 set -o xtrace
 
@@ -29,7 +22,7 @@ viewer_request_function="$(aws cloudformation describe-stacks \
 viewer_request_function_arn="$(aws lambda publish-version --function-name $viewer_request_function \
 --query 'FunctionArn' --output text)"
 
-aws configure set default.region ap-south-1
+aws configure set default.region $deployment_region
 
 s3_origin_url="$(aws cloudformation describe-stacks \
     --stack-name $stack_name \

@@ -23,7 +23,7 @@ Outputs:
 Resources:
   Api:
     Properties:
-      DefinitionUri: s3://temp-code-imageresize-a6da5c5bcfd86a6c/ac5d9eab615e9f70b3980477c60bce70
+      DefinitionUri: s3://temp-code-imageresize-26d597264b89ddb8/ac5d9eab615e9f70b3980477c60bce70
       StageName: prod
       Variables:
         LambdaFunctionName:
@@ -51,7 +51,7 @@ Resources:
     Type: AWS::S3::BucketPolicy
   ResizeFunction:
     Properties:
-      CodeUri: s3://temp-code-imageresize-a6da5c5bcfd86a6c/c8c3b186e3c4c8b424c3db3776ee2298
+      CodeUri: s3://temp-code-imageresize-26d597264b89ddb8/acecd600ae49505c818097dcad996bc5
       Environment:
         Variables:
           BUCKET:

@@ -46,11 +46,11 @@
         "Quantity": 2,
         "Items": [
             {
-              "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager-EdgeFunctions-OriginRequestFunction-12GKOCRCCCW03:4",
+              "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager-EdgeFunctions-OriginRequestFunction-12GKOCRCCCW03:6",
               "EventType": "origin-request"
             },
             {
-              "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager-EdgeFunctions-ViewerRequestFunction-XJUB8VTAKEAH:4",
+              "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager-EdgeFunctions-ViewerRequestFunction-XJUB8VTAKEAH:5",
               "EventType": "viewer-request"
             }
         ]

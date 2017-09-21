@@ -1,19 +1,8 @@
 #!/bin/bash
 
-set -o errexit
+. ./bin/config
 
-stack_name=ImageManager
-stack_name_ef=$stack_name-EdgeFunctions
-
-aws configure set default.region ap-south-1
-
-code_bucket_name="temp-code-imageresize-$(openssl rand -hex 8)"
-image_bucket_name="ganeshjiimageresize"
-account_id="$(aws sts get-caller-identity --query Account --output text \
-  | xargs echo -n)"
-edge_function_role="edge_function"
-
-set -o xtrace
+aws configure set default.region $deployment_region
 
 aws cloudformation describe-stacks \
   --stack-name "${stack_name}" \
@@ -34,10 +23,9 @@ echo "var config = module.exports = {image_bucket:\"$s3_image_bucket_arn\",apigw
 
 zip -r ${PWD}/dist/origin-request-function.zip config.js
 
-aws configure set default.region us-east-1
+aws configure set default.region $edge_function_region
 
 sed -e "s/EDGE_FUNCTION_ROLE/${edge_function_role}/g" -e "s/ACCOUNT_ID/${account_id}/g" \
-    -e "s/IMAGE_BUCKET/${image_bucket_name}/g" \
     edge-functions.yaml > deploy/edge-functions.yaml
 
 code_bucket_name="temp-code-imageresize-$(openssl rand -hex 8)"
