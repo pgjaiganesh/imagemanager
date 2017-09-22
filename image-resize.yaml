@@ -38,7 +38,7 @@ Resources:
       Handler: index.handler
       Runtime: nodejs6.10
       MemorySize: 1536
-      Timeout: 60
+      Timeout: 1
       Environment:
         Variables:
           BUCKET: !Ref IMAGEBUCKET
