@@ -31,8 +31,3 @@ make all
 ./bin/deploy
 ./bin/deploy1
 ./bin/deploy2
-
-
-to delete old buckets with pattern
-
-aws s3 ls |grep 'temp-image*' | awk '{print "s3://"$3}' | xargs -I% aws s3 rb --force "%"

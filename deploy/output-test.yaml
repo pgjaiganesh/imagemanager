@@ -1,57 +1,19 @@
 AWSTemplateFormatVersion: 2010-09-09
 Outputs:
-  BucketWebsiteUrl:
-    Export:
-      Name:
-        Fn::Sub: ${AWS::StackName}-BucketWebsiteUrl
+  ViewerRequestFunctionArn:
     Value:
       Fn::GetAtt:
-      - IMAGEBUCKET
-      - WebsiteURL
-  ImageBucket:
-    Export:
-      Name:
-        Fn::Sub: ${AWS::StackName}-ImageBucket
-    Value:
-      Ref: IMAGEBUCKET
-  RoleArn:
-    Value:
-      Fn::GetAtt:
-      - EdgeLambdaRole
+      - ViewerRequestFunction
       - Arn
 Resources:
-  EdgeLambdaRole:
+  ViewerRequestFunction:
     Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-        - Action:
-          - sts:AssumeRole
-          Effect: Allow
-          Principal:
-            Service:
-            - lambda.amazonaws.com
-            - edgelambda.amazonaws.com
-        Version: '2012-10-17'
-      ManagedPolicyArns:
-      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-    Type: AWS::IAM::Role
-  IMAGEBUCKET:
-    Properties:
-      AccessControl: PublicRead
-      WebsiteConfiguration:
-        IndexDocument: index.html
-    Type: AWS::S3::Bucket
-  ImageBucketPolicy:
-    Properties:
-      Bucket:
-        Ref: IMAGEBUCKET
-      PolicyDocument:
-        Statement:
-          Action:
-          - s3:GetObject
-          Effect: Allow
-          Principal: '*'
-          Resource:
-            Fn::Sub: arn:aws:s3:::${IMAGEBUCKET}/*
-    Type: AWS::S3::BucketPolicy
+      CodeUri: s3://temp-code-imageresize-74d0c5dff93ef717/f92a2f236db928a78768777da091aa45
+      FunctionName:
+        Fn::Sub: test-${AWS::Region}${AWS::AccountId}-ViewerRequestFunction
+      Handler: index.handler
+      MemorySize: 128
+      Runtime: nodejs6.10
+      Timeout: 1
+    Type: AWS::Serverless::Function
 Transform: AWS::Serverless-2016-10-31

@@ -1,5 +1,4 @@
 AWSTemplateFormatVersion: 2010-09-09
-
 Transform: AWS::Serverless-2016-10-31
 
 Resources:
@@ -11,15 +10,26 @@ Resources:
   #     AccessControl: PublicRead
   #     WebsiteConfiguration:
   #       IndexDocument: index.html
-  ViewerRequestFunction:
-    Type: AWS::Serverless::Function
+
+  SourceBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
     Properties:
-      FunctionName: !Sub "test-${AWS::Region}${AWS::AccountId}-ViewerRequestFunction"
-      CodeUri: ../dist/viewer-request-function.zip
-      Handler: index.handler
-      Runtime: nodejs6.10
-      MemorySize: 128
-      Timeout: 1
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+      NotificationConfiguration:
+        LambdaConfigurations:
+          -
+            Function: arn:aws:lambda:ap-south-1:444603092185:function:test-ap-south-1444603092185-ViewerRequestFunction
+            Event: "s3:ObjectCreated:*"
+            Filter:
+              S3Key:
+                Rules:
+                  -
+                    Name: suffix
+                    Value: txt
+
 #   ImageBucketPolicy:
 #     Type: AWS::S3::BucketPolicy
 #     Properties:
@@ -54,5 +64,10 @@ Outputs:
 #     Export:
 #       Name: !Sub "${AWS::StackName}-BucketWebsiteUrl"
 
-  ViewerRequestFunctionArn:
-     Value: !GetAtt ViewerRequestFunction.Arn
+  ImageBucket:
+    Value: !Ref SourceBucket
+    Export:
+      Name: !Sub "${AWS::StackName}-SourceBucket"
+
+  # RoleArn:
+  #   Value: !GetAtt EdgeLambdaRole.Arn

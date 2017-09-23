@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: 2010-09-09
+Outputs:
+  ImageBucket:
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-SourceBucket
+    Value:
+      Ref: SourceBucket
+Resources:
+  SourceBucket:
+    DeletionPolicy: Retain
+    Properties:
+      AccessControl: PublicRead
+      NotificationConfiguration:
+        LambdaConfigurations:
+        - Event: s3:ObjectCreated:*
+          Filter:
+            S3Key:
+              Rules:
+              - Name: suffix
+                Value: txt
+          Function: arn:aws:lambda:ap-south-1:444603092185:function:test-ap-south-1444603092185-ViewerRequestFunction
+      WebsiteConfiguration:
+        IndexDocument: index.html
+    Type: AWS::S3::Bucket
+Transform: AWS::Serverless-2016-10-31
