@@ -32,7 +32,7 @@ zip -r ${PWD}/dist/origin-request-function.zip config.js
 aws configure set default.region $edge_function_region
 
 sed -e "s/ACCOUNT_ID/${account_id}/g" \
-    edge-functions.yaml > deploy/edge-functions.yaml
+    cloudformation/edge-functions.yaml > deploy/edge-functions.yaml
 
 code_bucket_name="temp-code-imageresize-$(openssl rand -hex 8)"
 aws s3 mb "s3://${code_bucket_name}"

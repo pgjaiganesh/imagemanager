@@ -11,10 +11,10 @@ region="$(aws configure get region)"
 set -o xtrace
 
 sed -e "s/REGION/${region}/g" \
-  test.yaml > deploy/test.yaml
+  cloudformation/test.yaml > deploy/test.yaml
 
 sed -e "s/REGION/${region}/g" \
-  test-update.yaml > deploy/test-update.yaml
+  cloudformation/test-update.yaml > deploy/test-update.yaml
 
 aws s3 mb "s3://${code_bucket_name}"
 

@@ -6,10 +6,10 @@ aws configure set default.region $deployment_region
 region="$(aws configure get region)"
 
 sed -e "s/REGION/${region}/g" -e "s/ACCOUNT_ID/${account_id}/g" \
-  api-template.yaml > deploy/api.yaml
+  cloudformation/api-template.yaml > deploy/api.yaml
 
 sed -e "s/ACCOUNT_ID/${account_id}/g" \
-    image-resize.yaml > deploy/image-resize.yaml
+    cloudformation/image-resize.yaml > deploy/image-resize.yaml
 
 aws s3 mb "s3://${code_bucket_name}"
 
