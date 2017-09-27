@@ -10,7 +10,7 @@ Subsequent requests are just served directly from S3.
 
 ## Usage
 
-1. Build the Resize Lambda function under `lambda/resize-function`
+1. Build the environment.
 
     The image resize function uses [sharp][sharp] module which needs the `libvips` native extensions. The Lambda code along with dependencies must be build and packaged in Amazon Linux environment.
 
@@ -20,16 +20,14 @@ Subsequent requests are just served directly from S3.
 
 1. Execute `make all`. This command takes a while to complete.
 
-1.  Execute `make dist` whenever you make changes to the lambda code, this command builds them in the correct environment build above. The packaged zip files are stored inside `./dist` folder
+1.  Execute `make dist` whenever you make changes to the lambda code, this command builds them in the correct environment build above. The packaged zip files are stored inside `dist` folder
     - ./dist/resize-function.zip - contains the Image Resize Lambda function
     - ./dist/Viewer-Request-function.zip - contains Lambda@Edge code for 'Viewer-Request' event.
     - ./dist/origin-request-function.zip - contains Lambda@Edge code for 'Origin-Request' event.
 
-1.  Execute `make resize` to packages and deploy the CloudFormation template `cloudformation/image-resize.yaml` which defines the API Gateway and AWS Lambda function for Image resize. The deployed region can be configured in `$deployment_region` variable in `./bin/config` script.
+1.  Execute `make resize` to packages and deploy the CloudFormation template `cloudformation/image-resize.yaml` which defines the API Gateway and AWS Lambda function for Image resize.
+The deployed region can be configured in `$deployment_region` variable in `bin/config` script.
 
-Packages and deploys the CloudFormation template (cloudformation/edge-functions.yaml) for the two Lambda@Edge functions to handle 'Viewer-Request' and 'Origin-Request' Amazon CloudFront events. Also generates the config.js and packages into 'dist/origin-request-function.zip'. Always deploys into us-east-1 as required by Lambda@Edge.
-- make ef
+1.  Execute `make ef` to packages and deploys the CloudFormation template `cloudformation/edge-functions.yaml` for the two Lambda@Edge functions to handle 'Viewer-Request' and 'Origin-Request' Amazon CloudFront events. Also generates the `config.js` and packages into 'dist/origin-request-function.zip'. Please note to always deploy into `us-east-1` region as required by AWS Lambda@Edge.
 
-Creates CloudFront distribution with custom origin as S3 website url created in ./bin/deploy,
-creates lambda edge function versions and associates them to the distribution
-- make cf
+1.  Execute `make cf` to creates CloudFront distribution with custom origin as S3 website url created in `make resize`. Further creates a new version of the AWS Lambda@Edge functions created above and associates them to the appropriate event in the configuration.
