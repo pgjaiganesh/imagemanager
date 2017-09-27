@@ -1,4 +1,4 @@
-.PHONY: all image package dist clean
+.PHONY: all image package dist resize ef cf clean
 
 all: package
 
@@ -14,6 +14,15 @@ dist: package
 	mkdir -p dist && cd lambda/resize-function && zip -FS -q -r ../../dist/resize-function.zip *
 	mkdir -p dist && cd lambda/viewer-request-function && zip -FS -q -r ../../dist/viewer-request-function.zip *
 	mkdir -p dist && cd lambda/origin-request-function && zip -FS -q -r ../../dist/origin-request-function.zip *
+
+resize:
+	./bin/deploy
+
+ef:
+	./bin/deploy1
+
+cf:
+	./bin/deploy2
 
 clean:
 	rm -r lambda/resize-function/node_modules
