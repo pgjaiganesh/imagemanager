@@ -28,13 +28,16 @@ exports.handler = function(event, context, callback) {
   console.log("Width - Height: %d - %d",width,height);
   console.log("Path prefix :%s",prefix);
 
+  //get the source image file
   S3.getObject({Bucket: BUCKET, Key: originalKey}).promise()
+    //perform the resize operation
     .then(data => Sharp(data.Body)
       .resize(width, height)
       .toFormat(requiredFormat)
       .toBuffer()
     )
     .then(buffer => {
+      //save the resized object to S3 bucket with appropriate object key.
       S3.putObject({
         Body: buffer,
         Bucket: BUCKET,
@@ -42,6 +45,7 @@ exports.handler = function(event, context, callback) {
         CacheControl: 'max-age=86400',
         Key: key,
       }).promise();
+      //return a success message
       callback(null, {
         statusCode: 200,
         headers: {'ContentLength': '2'},

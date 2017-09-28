@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#deploys the API Gateway and Image resize function
+
 . ./bin/config
 
 aws configure set default.region $deployment_region

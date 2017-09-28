@@ -1,4 +1,5 @@
 #!/bin/bash
+#used for testing
 
 set -o errexit
 

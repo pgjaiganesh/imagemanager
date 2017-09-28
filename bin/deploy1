@@ -1,6 +1,11 @@
 #!/bin/bash
 
+#deploys the Lambda@Edge functions
+
 . ./bin/config
+
+#switch to the API GW + Image Resize function region to fetch the Output variables
+#from cloudformation stack
 
 aws configure set default.region $deployment_region
 
@@ -24,17 +29,21 @@ apigw_url="$(aws cloudformation describe-stacks \
         --output json \
         --query 'Stacks[].Outputs[?OutputKey==`APIGWUrl`].OutputValue' --output text)"
 
+#creates the config.js file with bucket urls and packages into the function
+#before deployment
 echo "var config = module.exports = {image_bucket:\"$s3_image_bucket_arn\",\
 apigw_url:\"$apigw_url\",image_bucket_url:\"$s3_image_bucket_url\"}" > config.js
 
 zip -r ${PWD}/dist/origin-request-function.zip config.js
 
+#switch to us-east-1 before deploying the Lambda@Edge functions
 aws configure set default.region $edge_function_region
 
 sed -e "s/ACCOUNT_ID/${account_id}/g" \
     cloudformation/edge-functions.yaml > deploy/edge-functions.yaml
 
 code_bucket_name="temp-code-imageresize-$(openssl rand -hex 8)"
+#create temporary bucket for cloudformation deployment
 aws s3 mb "s3://${code_bucket_name}"
 
 aws cloudformation package \
@@ -47,6 +56,7 @@ aws cloudformation deploy \
   --stack-name="${stack_name_ef}" \
   --capabilities=CAPABILITY_NAMED_IAM
 
+#delete the bucket
 aws s3 rb --force "s3://${code_bucket_name}"
 
 aws cloudformation describe-stacks \

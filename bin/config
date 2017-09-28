@@ -2,6 +2,10 @@
 
 set -o xtrace
 
+#set the template name,temporary bucket for code deployment and region where API Gateway &
+#Lamba functions will get deployment. Note: Do not change edge_function_region
+#as Lambda@Edge function must be deployed us-east-1 region only.
+
 stack_name=ImageManager
 stack_name_ef=$stack_name-EdgeFunctions
 edge_function_region=us-east-1
