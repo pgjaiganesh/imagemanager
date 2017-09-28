@@ -14,7 +14,7 @@ Subsequent requests are just served directly from S3.
 
     The image resize function uses [sharp][sharp] module which needs the `libvips` native extensions. The Lambda code along with dependencies must be build and packaged in Amazon Linux environment.
 
-    We will use a Docker container to build the packages locally. The Makefile is configured to download [Amazon Linux][amazon-linux], install Node.js 6.10 and build the code.
+    We will use a Docker container to build the packages locally. The Dockerfile is configured to download [Amazon Linux][amazon-linux], install Node.js 6.10.
 
     (If you do not want to use Dockers then follow [additional-notes] to see on how to setup environment and then follow the same sequence outlined below)
 
@@ -50,7 +50,7 @@ The deployed region can be configured in `$deployment_region` variable in `bin/c
 
 This reference architecture sample is [licensed][license] under Apache 2.0.
 
-[amazon-linux]: https://aws.amazon.com/blogs/compute/nodejs-packages-in-lambda/
+[amazon-linux]: https://store.docker.com/images/amazonlinux
 [cli]: https://aws.amazon.com/cli/
 [sharp]: https://github.com/lovell/sharp
 [license]: LICENSE

@@ -23,7 +23,7 @@ Outputs:
 Resources:
   Api:
     Properties:
-      DefinitionUri: s3://temp-code-imageresize-26d597264b89ddb8/ac5d9eab615e9f70b3980477c60bce70
+      DefinitionUri: s3://temp-code-imageresize-ca016a9402acf294/ac5d9eab615e9f70b3980477c60bce70
       StageName: prod
       Variables:
         LambdaFunctionName:
@@ -51,7 +51,7 @@ Resources:
     Type: AWS::S3::BucketPolicy
   ResizeFunction:
     Properties:
-      CodeUri: s3://temp-code-imageresize-26d597264b89ddb8/acecd600ae49505c818097dcad996bc5
+      CodeUri: s3://temp-code-imageresize-ca016a9402acf294/83bb33beb0389cc1127d4fa17795941e
       Environment:
         Variables:
           BUCKET:
@@ -67,7 +67,7 @@ Resources:
           Resource:
             Fn::Sub: arn:aws:s3:::${IMAGEBUCKET}/*
       Runtime: nodejs6.10
-      Timeout: 60
+      Timeout: 1
     Type: AWS::Serverless::Function
   ResizeFunctionPermission:
     Properties:
