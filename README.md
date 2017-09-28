@@ -47,9 +47,8 @@ The deployed region can be configured in `$deployment_region` variable in `bin/c
 
 ## License
 
-This reference architecture sample is [licensed][license] under Apache 2.0.
+This reference architecture sample is licensed under Apache 2.0.
 
 [amazon-linux]: https://store.docker.com/images/amazonlinux
 [cli]: https://aws.amazon.com/cli/
 [sharp]: https://github.com/lovell/sharp
-[license]: LICENSE
