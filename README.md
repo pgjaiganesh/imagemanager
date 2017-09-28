@@ -30,7 +30,9 @@ Subsequent requests are just served directly from S3.
 1.  Execute `make resize` to packages and deploy the CloudFormation template `cloudformation/image-resize.yaml` which defines the API Gateway and AWS Lambda function for Image resize.
 The deployed region can be configured in `$deployment_region` variable in `bin/config` script.
 
-1.  Execute `make ef` to packages and deploys the CloudFormation template `cloudformation/edge-functions.yaml` for the two Lambda@Edge functions to handle 'Viewer-Request' and 'Origin-Request' Amazon CloudFront events. Also generates the `config.js` and packages into 'dist/origin-request-function.zip'. Please note to always deploy into `us-east-1` region as required by AWS Lambda@Edge.
+1.  Execute `make ef` to packages and deploys the CloudFormation template `cloudformation/edge-functions.yaml` for the two Lambda@Edge functions to handle 'Viewer-Request' and 'Origin-Request' Amazon CloudFront events. Also generates the `config.js` and packages into 'dist/origin-request-function.zip'.
+
+**Note:** Please note to always deploy into `us-east-1` region as required by AWS Lambda@Edge.
 
 1.  Execute `make cf` to creates CloudFront distribution with custom origin as S3 website url created in `make resize`. Further creates a new version of the AWS Lambda@Edge functions created above and associates them to the appropriate event in the configuration.
 
@@ -39,12 +41,9 @@ The deployed region can be configured in `$deployment_region` variable in `bin/c
 1. Upload a high-res image file into the website bucket created with `images/` prefix.
 
 2. Open your favorite browser and navigate to:
-    https://<cloudfront-domain>/images/100x100/<image-name>
+    https://{cloudfront-domain}/images/100x100/{image-name}
     - cloudfront-domain - is available from the distribution created in the 'make cf' step.
     - 100x100 is the desired dimension
-
-
-**Note:** If you create the Lambda function yourself, make sure to select Node.js version 6.10.
 
 ## License
 
