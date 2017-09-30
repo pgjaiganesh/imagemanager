@@ -67,7 +67,7 @@ exports.handler = (event, context, callback) => {
                   Ex: from incoming url /images/100x100/webp/image.jpg parse
                   original key /images/image.jpg
                   */
-                  const match = path.match(/(.*)\/(\d+)x(\d+)\/(.*/)\/(.*)/);
+                  const match = path.match(/(.*)\/(\d+)x(\d+)\/(.*)\/(.*)/);
                   if(match){
                     request.uri = match[1]+"/"+match[5];
                     console.log("Falling back to original url %s",request.uri);

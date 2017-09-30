@@ -6,9 +6,12 @@ image:
 	docker build --tag amazonlinux:nodejs .
 
 package: image
-	docker run --rm --volume ${PWD}/lambda:/build amazonlinux:nodejs npm install --prefix resize-function --only=prod
-	docker run --rm --volume ${PWD}/lambda:/build amazonlinux:nodejs npm install --prefix viewer-request-function --only=prod
-	docker run --rm --volume ${PWD}/lambda:/build amazonlinux:nodejs npm install --prefix origin-request-function --only=prod
+	docker run --rm --volume ${PWD}/lambda:/build amazonlinux:nodejs \
+	/bin/bash -c "source ~/.bashrc; npm install --prefix resize-function --only=prod"
+	docker run --rm --volume ${PWD}/lambda:/build amazonlinux:nodejs \
+	/bin/bash -c "source ~/.bashrc; npm install --prefix viewer-request-function --only=prod"
+	docker run --rm --volume ${PWD}/lambda:/build amazonlinux:nodejs \
+	/bin/bash -c "source ~/.bashrc; npm install --prefix origin-request-function --only=prod"
 
 dist: package
 	mkdir -p dist && cd lambda/resize-function && zip -FS -q -r ../../dist/resize-function.zip *
