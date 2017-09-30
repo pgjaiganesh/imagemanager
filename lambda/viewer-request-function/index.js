@@ -1,4 +1,5 @@
 'use strict';
+
 //defines the allowed dimensions, default dimensions and how much variance from allowed
 //dimension is allowed.
 
@@ -12,25 +13,48 @@
 exports.handler = (event, context, callback) => {
     const request = event.Records[0].cf.request;
     const headers = request.headers;
-    let fwdUri = request.uri;
-    console.log("Incoming uri %s",fwdUri);
-    //assuming image path is /images/widthxheight/image-name
-    const match = fwdUri.match(/(.*)\/(\d+)x(\d+)\/(.*)\.(.*)/);
-    //older with query parameter (.*)\/(\d+)x(\d+)\/(.*)\.(.*)\?(.*)
-    const prefix = match[1];
-    let width = match[2];
-    let height = match[3];
-    let imageName = match[4];
-    const extension = match[5];
-    //const queryParameters = match[6];
+    //get the querystrings parameter. In our case it would be d=100x100
+    const queryString = request.querystring;
+    //fetch the uri of original image
+    const fwdUri = request.uri;
 
-    console.log("%s %d %d %s #prefix",prefix,width,height,imageName);
+    console.log("Request : %j",request);
+    console.log("Incoming uri %s",fwdUri);
+    console.log("Query String %s",queryString);
+
+    //parse the dimensions - width x height
+    const dimensionMatch = queryString.match(/d=(\d+)x(\d+)/);
+
+    //if there is no dimension attribute, just pass the request
+    if(!dimensionMatch){
+        callback(null, request);
+        return;
+    }
+    console.log("dimension match %s",dimensionMatch);
+    //set the width and height parameters
+    let width = dimensionMatch[1];
+    let height = dimensionMatch[2];
+
+    /*
+    parse the prefix, image name and extension from the uri.
+    In our case /images/image.jpg
+    */
+    const match = fwdUri.match(/(.*)\/(.*)\.(.*)/);
+
+    let prefix = match[1];
+    let imageName = match[2];
+    let extension = match[3];
+
+    console.log("All parsed values : %s %d %d %s",prefix,width,height,imageName);
+    //define variable to be set to true if requested dimension is allowed.
     let matchFound = false;
+    /*calculate the acceptable variance. If image dimension is 105 and acceptable,
+    then in our case, the dimension would be corrected to 100.
+    */
     let variancePercent = (variables.variance/100);
 
     for (var dimension of variables.allowedDimension) {
         //console.log(dimension);
-        //compute allowed variance of dimension
         let minWidth = dimension.w - (dimension.w * variancePercent);
         let maxWidth = dimension.w + (dimension.w * variancePercent);
         console.log("deviance :%d to %d - %d",minWidth,maxWidth, width);
@@ -38,42 +62,37 @@ exports.handler = (event, context, callback) => {
             width = dimension.w;
             height = dimension.h;
             matchFound = true;
-            //if it matches a predined dimension set width and height variable
-            //to allowed dimension and break
             break;
         }
     }
-    //set to default requested dimension do not match allowed dimension within variance.
+    //if no match is found from allowed dimension with variance then set to default dimensions.
     if(!matchFound){
         width = variables.defaultDimension.w;
         height = variables.defaultDimension.h;
     }
 
     console.log("width x height : %d x %d", width,height);
-    //read headers to be used
+
+    //fetch the accept header to determine if webP is supported.
     var accept = headers['accept']?headers['accept'][0].value:"";
+    var ua = headers['user-agent']?headers['user-agent'][0].value:"";
 
     console.log(accept);
     console.log(ua);
-    //act only for /images/ path
-    if (request.uri.includes('images') !== true) {
-        // do not process if this is not an image request
-        callback(null, request);
-    } else {
-            //construct a new URL
-            var url = [];
-            url.push(prefix);url.push(width+"x"+height);
-            //if viewer supports webP format then override, else use incoming format
-            if (accept.indexOf(variables.webpExtension) >= 0) {
-                 url.push(variables.webpExtension);
-            }
-            else{
-                url.push(extension);
-            }
-            url.push(imageName+"."+extension);
 
-        console.log("Final url :%s",url.join("/"));
-        request.uri = url.join("/");
-        callback(null, request);
+    //check support for webp
+    var url = [];
+    //build the new uri to be forwarded upstream
+    url.push(prefix);url.push(width+"x"+height);
+    if (accept.indexOf(variables.webpExtension) >= 0) {
+        url.push(variables.webpExtension);
     }
+    else{
+        url.push(extension);
+    }
+        url.push(imageName+"."+extension);
+
+    console.log("Final url :%s",url.join("/"));
+    request.uri = url.join("/");
+    callback(null, request);
 }

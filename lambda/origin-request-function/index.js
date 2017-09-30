@@ -9,8 +9,9 @@ exports.handler = (event, context, callback) => {
     const request = event.Records[0].cf.request;
 
     console.log("Request :%j",request);
-
     console.log("config %j",config);
+
+    //set the S3 and API GW endpoints
     const BUCKET = config.image_bucket;
     const APIGW_URL = config.apigw_url+"?key=";
     const HOSTNAME = config.image_bucket_url.replace("http://","");
@@ -18,19 +19,18 @@ exports.handler = (event, context, callback) => {
     console.log("Bucket :%s",BUCKET);
     console.log("Hostname :%s",HOSTNAME);
 
-    let key = request.uri.substring(1);
     //perform following action only for the /images/ path.
     if (request.uri.includes('images') == true) {
 
         console.log("Time remaining1 :%s",context.getRemainingTimeInMillis());
 
-        //var path1 = "/"+config.image_bucket+request.uri;
-        var path1 = request.uri;
-        console.log("s3 url :%s",path1);
+        //fetch the required path. Ex: uri /images/100x100/webp/image.jpg
+        var path = request.uri;
+        console.log("url :%s",path);
 
         var options = {
             hostname: HOSTNAME,
-            path: path1,
+            path: path,
             port: 80,
             method: 'HEAD'
         };
@@ -43,8 +43,12 @@ exports.handler = (event, context, callback) => {
                     console.log("Made http call");
                 });
 
-                //if image does not exist initiate a create via API GW
-                if(res.statusCode != 200){
+                //if image does not exist initiate a resize operation via API GW
+                if(res.statusCode == 404){
+                    /*read the S3 key from the path vaiable.
+                    Ex: path variable /images/100x100/webp/image.jpg
+                    */
+                    let key = path.substring(1);
                     const templateUrl = APIGW_URL+key;
                     console.log("API Call : %j",templateUrl);
 
@@ -56,6 +60,18 @@ exports.handler = (event, context, callback) => {
                         });
                         console.log("Time remaining2 :%s",context.getRemainingTimeInMillis());
                     });
+                }
+                else if(res.statusCode != 200){
+                  /*for all other conditions when the API GW request did not complete with
+                  success '200 Ok' fallback to the original image.
+                  Ex: from incoming url /images/100x100/webp/image.jpg parse
+                  original key /images/image.jpg
+                  */
+                  const match = path.match(/(.*)\/(\d+)x(\d+)\/(.*/)\/(.*)/);
+                  if(match){
+                    request.uri = match[1]+"/"+match[5];
+                    console.log("Falling back to original url %s",request.uri);
+                  }
                 }
             });
     }

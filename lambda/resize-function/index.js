@@ -7,19 +7,18 @@ const S3 = new AWS.S3({
 const Sharp = require('sharp');
 
 const BUCKET = process.env.BUCKET;
-const URL = process.env.URL;
-const defaultWidth = 100;
-const defaultHeight = 100;
-//sample key format https://yka2n5nzbf.execute-api.us-east-1.amazonaws.com/prod?key=images/200x200/webp/image2.png
 
 exports.handler = function(event, context, callback) {
   const key = event.queryStringParameters.key;
-  const format = event.queryStringParameters.format;
+  /*
+  parse the prefix, width, height and image name
+  //Ex: key=images/200x200/webp/image.jpg
+  */
   const match = key.match(/(.*)\/(\d+)x(\d+)\/(.*)\/(.*)/);
   const prefix = match[1];
   const width = parseInt(match[2],10);
   const height = parseInt(match[3],10);
-  const requiredFormat = match[4] == "jpg"?"jpeg":match[4];//correction for jpg
+  const requiredFormat = match[4] == "jpg"?"jpeg":match[4];//correction for jpg required for 'Sharp'
   const imageName = match[5];
   const originalKey = prefix+"/"+imageName;
 
@@ -53,7 +52,7 @@ exports.handler = function(event, context, callback) {
       });
     })
     .catch(err => callback(null, {
-      statusCode: 200,
+      statusCode: 503,
       headers: {'ContentLength': '2'},
       body: "no",
     }))
