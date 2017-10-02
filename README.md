@@ -34,7 +34,7 @@ The deployed region can be configured in `$deployment_region` variable in `bin/c
 
   **Note:** Please note to always deploy into `us-east-1` region as required by AWS Lambda@Edge.
 
-1.  Execute `make cf` to creates CloudFront distribution with custom origin as S3 website url created in `make resize`. Further creates a new version of the AWS Lambda@Edge functions created above and associates them to the appropriate event in the configuration.
+6.  Execute `make cf` to creates CloudFront distribution with custom origin as S3 website url created in `make resize`. Further creates a new version of the AWS Lambda@Edge functions created above and associates them to the appropriate event in the configuration.
 
 ## Usage
 
