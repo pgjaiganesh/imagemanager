@@ -38,10 +38,10 @@ The deployed region can be configured in `$deployment_region` variable in `bin/c
 
 ## Usage
 
-1. Upload a high-res image file into the website bucket created with `images/` prefix.
+1. Upload a high-res image file into the website bucket created.
 
 2. Open your favorite browser and navigate to:
-    https://{cloudfront-domain}/images/100x100/{image-name}
+    https://{cloudfront-domain}/{image-name}?d=100x100
     - cloudfront-domain - is available from the distribution created in the 'make cf' step.
     - 100x100 is the desired dimension
 
