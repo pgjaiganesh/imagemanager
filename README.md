@@ -16,7 +16,7 @@ Subsequent requests are just served directly from S3.
 
     We will use a Docker container to build the packages locally. The Dockerfile is configured to download [Amazon Linux][amazon-linux], install Node.js 6.10.
 
-    (If you do not want to use Dockers then follow [a relative link](additional-notes.md) to see on how to setup environment and then follow the same sequence outlined below)
+    (If you do not want to use Dockers then follow [EC2 setup](additional-notes.md) to see on how to setup environment and then follow the same sequence outlined below)
 
     Install the latest version of [AWS CLI][cli] used for deployment.
 
