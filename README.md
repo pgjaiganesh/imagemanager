@@ -32,7 +32,7 @@ The deployed region can be configured in `$deployment_region` variable in `bin/c
 
 1.  Execute `make ef` to packages and deploys the CloudFormation template `cloudformation/edge-functions.yaml` for the two Lambda@Edge functions to handle 'Viewer-Request' and 'Origin-Request' Amazon CloudFront events. Also generates the `config.js` and packages into 'dist/origin-request-function.zip'.
 
-**Note:** Please note to always deploy into `us-east-1` region as required by AWS Lambda@Edge.
+  **Note:** Please note to always deploy into `us-east-1` region as required by AWS Lambda@Edge.
 
 1.  Execute `make cf` to creates CloudFront distribution with custom origin as S3 website url created in `make resize`. Further creates a new version of the AWS Lambda@Edge functions created above and associates them to the appropriate event in the configuration.
 
@@ -42,7 +42,7 @@ The deployed region can be configured in `$deployment_region` variable in `bin/c
 
 2. Open your favorite browser and navigate to:
     https://{cloudfront-domain}/{image-name}?d=100x100
-    - cloudfront-domain - is available from the distribution created in the 'make cf' step.
+    - cloudfront-domain - is available from the distribution created in the `make cf` step.
     - 100x100 is the desired dimension
 
 ## License
