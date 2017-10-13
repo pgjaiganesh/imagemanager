@@ -16,7 +16,7 @@ exports.handler = (event, context, callback) => {
     //get the querystrings parameter. In our case it would be d=100x100
     const queryString = request.querystring;
     //fetch the uri of original image
-    const fwdUri = request.uri;
+    let fwdUri = request.uri;
 
     console.log("Request : %j",request);
     console.log("Incoming uri %s",fwdUri);
@@ -92,7 +92,8 @@ exports.handler = (event, context, callback) => {
     }
         url.push(imageName+"."+extension);
 
-    console.log("Final url :%s",url.join("/"));
-    request.uri = url.join("/");
+    fwdUri = url.join("/");
+    console.log("Final url :%s",fwdUri);
+    request.uri = fwdUri;
     callback(null, request);
 }

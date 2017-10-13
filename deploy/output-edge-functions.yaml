@@ -34,7 +34,7 @@ Resources:
     Type: AWS::IAM::Role
   OriginRequestFunction:
     Properties:
-      CodeUri: s3://temp-code-imageresize-9199435071c36b7a/0ce2b7b54a646b530d3e10d8c91538a2
+      CodeUri: s3://temp-code-imageresize-4a1f14244821f161/ff086fa6276c97c90ebe6dc1b15e3526
       Handler: index.handler
       MemorySize: 128
       Role:
@@ -46,7 +46,7 @@ Resources:
     Type: AWS::Serverless::Function
   ViewerRequestFunction:
     Properties:
-      CodeUri: s3://temp-code-imageresize-9199435071c36b7a/f8f0803c24ac01a567cd1ae98dd0e6ce
+      CodeUri: s3://temp-code-imageresize-4a1f14244821f161/c732c2fac13a009f535962aa604059dc
       Handler: index.handler
       MemorySize: 128
       Role:

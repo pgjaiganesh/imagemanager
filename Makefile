@@ -13,7 +13,7 @@ package: image
 	docker run --rm --volume ${PWD}/lambda:/build amazonlinux:nodejs \
 	/bin/bash -c "source ~/.bashrc; npm install --prefix origin-request-function --only=prod"
 
-dist: package
+dist:
 	mkdir -p dist && cd lambda/resize-function && zip -FS -q -r ../../dist/resize-function.zip *
 	mkdir -p dist && cd lambda/viewer-request-function && zip -FS -q -r ../../dist/viewer-request-function.zip *
 	mkdir -p dist && cd lambda/origin-request-function && zip -FS -q -r ../../dist/origin-request-function.zip *

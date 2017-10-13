@@ -1,5 +1,5 @@
 {
-  "CallerReference": "my-distribution-Sun Oct  1 00:16:33 IST 2017",
+  "CallerReference": "my-distribution-Thu Oct  5 10:50:11 IST 2017",
   "Aliases": {
     "Quantity": 0
   },
@@ -49,11 +49,11 @@
         "Quantity": 2,
         "Items": [
             {
-              "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager-EdgeFunctions-OriginRequestFunction-12GKOCRCCCW03:13",
+              "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager-EdgeFunctions-OriginRequestFunction-12GKOCRCCCW03:17",
               "EventType": "origin-request"
             },
             {
-              "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager-EdgeFunctions-ViewerRequestFunction-XJUB8VTAKEAH:13",
+              "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager-EdgeFunctions-ViewerRequestFunction-XJUB8VTAKEAH:17",
               "EventType": "viewer-request"
             }
         ]

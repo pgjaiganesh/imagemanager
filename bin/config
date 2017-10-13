@@ -10,7 +10,7 @@ stack_name=ImageManager
 stack_name_ef=$stack_name-EdgeFunctions
 edge_function_region=us-east-1
 deployment_region=ap-south-1
-code_bucket_name="temp-code-imageresize-$(openssl rand -hex 8)"
+code_bucket_name="temp-code-redirector-$(openssl rand -hex 8)"
 
 account_id="$(aws sts get-caller-identity --query Account --output text \
   | xargs echo -n)"
