@@ -1,0 +1,133 @@
+{
+    "ETag": "E16CRSIBAG1GQU",
+    "Distribution": {
+        "Id": "E3KQ0TE18MS18M",
+        "ARN": "arn:aws:cloudfront::444603092185:distribution/E3KQ0TE18MS18M",
+        "Status": "InProgress",
+        "LastModifiedTime": "2017-10-13T11:33:22.525Z",
+        "InProgressInvalidationBatches": 0,
+        "DomainName": "d3llrtk6t999rp.cloudfront.net",
+        "ActiveTrustedSigners": {
+            "Enabled": false,
+            "Quantity": 0
+        },
+        "DistributionConfig": {
+            "CallerReference": "ImageManager-MyDistribution-1CGA630ZWLT8I",
+            "Aliases": {
+                "Quantity": 0
+            },
+            "DefaultRootObject": "index.html",
+            "Origins": {
+                "Quantity": 1,
+                "Items": [
+                    {
+                        "Id": "myS3Origin",
+                        "DomainName": "imagemanager-imagebucket-132exspf1grey.s3.amazonaws.com",
+                        "OriginPath": "",
+                        "CustomHeaders": {
+                            "Quantity": 0
+                        },
+                        "CustomOriginConfig": {
+                            "HTTPPort": 80,
+                            "HTTPSPort": 443,
+                            "OriginProtocolPolicy": "https-only",
+                            "OriginSslProtocols": {
+                                "Quantity": 2,
+                                "Items": [
+                                    "SSLv3",
+                                    "TLSv1"
+                                ]
+                            },
+                            "OriginReadTimeout": 30,
+                            "OriginKeepaliveTimeout": 5
+                        }
+                    }
+                ]
+            },
+            "DefaultCacheBehavior": {
+                "TargetOriginId": "myS3Origin",
+                "ForwardedValues": {
+                    "QueryString": true,
+                    "Cookies": {
+                        "Forward": "none"
+                    },
+                    "Headers": {
+                        "Quantity": 0
+                    },
+                    "QueryStringCacheKeys": {
+                        "Quantity": 1,
+                        "Items": [
+                            "d"
+                        ]
+                    }
+                },
+                "TrustedSigners": {
+                    "Enabled": false,
+                    "Quantity": 0
+                },
+                "ViewerProtocolPolicy": "allow-all",
+                "MinTTL": 100,
+                "AllowedMethods": {
+                    "Quantity": 2,
+                    "Items": [
+                        "HEAD",
+                        "GET"
+                    ],
+                    "CachedMethods": {
+                        "Quantity": 2,
+                        "Items": [
+                            "HEAD",
+                            "GET"
+                        ]
+                    }
+                },
+                "SmoothStreaming": false,
+                "DefaultTTL": 86400,
+                "MaxTTL": 31536000,
+                "Compress": true,
+                "LambdaFunctionAssociations": {
+                    "Quantity": 2,
+                    "Items": [
+                        {
+                            "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager-EdgeFunctions-OriginRequestFunction-12GKOCRCCCW03:17",
+                            "EventType": "origin-request"
+                        },
+                        {
+                            "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager-EdgeFunctions-ViewerRequestFunction-XJUB8VTAKEAH:17",
+                            "EventType": "viewer-request"
+                        }
+                    ]
+                }
+            },
+            "CacheBehaviors": {
+                "Quantity": 0
+            },
+            "CustomErrorResponses": {
+                "Quantity": 0
+            },
+            "Comment": "distribution for content delivery",
+            "Logging": {
+                "Enabled": false,
+                "IncludeCookies": false,
+                "Bucket": "",
+                "Prefix": ""
+            },
+            "PriceClass": "PriceClass_All",
+            "Enabled": true,
+            "ViewerCertificate": {
+                "CloudFrontDefaultCertificate": true,
+                "MinimumProtocolVersion": "TLSv1",
+                "CertificateSource": "cloudfront"
+            },
+            "Restrictions": {
+                "GeoRestriction": {
+                    "RestrictionType": "none",
+                    "Quantity": 0
+                }
+            },
+            "WebACLId": "",
+            "HttpVersion": "http1.1",
+            "IsIPV6Enabled": false
+        }
+    }
+}

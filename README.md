@@ -20,6 +20,10 @@ Subsequent requests are just served directly from S3.
 
     Install the latest version of [AWS CLI][cli] used for deployment.
 
+    Install `jq` which allows us to parse JSON format from command line. This is used in the `make cf`
+    step below.
+    https://stedolan.github.io/jq/download/
+
 1. Execute `make all`. This command takes a while to complete.
 
 1.  Execute `make dist` whenever you make changes to the lambda code, this command builds them in the correct environment build above. The packaged zip files are stored inside `dist` folder

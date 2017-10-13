@@ -20,10 +20,16 @@ Outputs:
         Fn::Sub: ${AWS::StackName}-ImageBucket
     Value:
       Ref: IMAGEBUCKET
+  MyDistribution:
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-MyDistribution
+    Value:
+      Ref: MyDistribution
 Resources:
   Api:
     Properties:
-      DefinitionUri: s3://temp-code-imageresize-603dc2b8a1824080/ac5d9eab615e9f70b3980477c60bce70
+      DefinitionUri: s3://temp-code-redirector-742f758097d8982b/ac5d9eab615e9f70b3980477c60bce70
       StageName: prod
       Variables:
         LambdaFunctionName:
@@ -49,9 +55,41 @@ Resources:
           Resource:
             Fn::Sub: arn:aws:s3:::${IMAGEBUCKET}/*
     Type: AWS::S3::BucketPolicy
+  MyDistribution:
+    Properties:
+      DistributionConfig:
+        Comment: distribution for content delivery
+        DefaultCacheBehavior:
+          Compress: 'true'
+          ForwardedValues:
+            Cookies:
+              Forward: none
+            QueryString: 'true'
+            QueryStringCacheKeys:
+            - d
+          MinTTL: '100'
+          SmoothStreaming: 'false'
+          TargetOriginId: myS3Origin
+          ViewerProtocolPolicy: allow-all
+        DefaultRootObject: index.html
+        Enabled: 'true'
+        Origins:
+        - CustomOriginConfig:
+            HTTPPort: '80'
+            HTTPSPort: '443'
+            OriginProtocolPolicy: https-only
+          DomainName:
+            Fn::GetAtt:
+            - IMAGEBUCKET
+            - DomainName
+          Id: myS3Origin
+        PriceClass: PriceClass_All
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: 'true'
+    Type: AWS::CloudFront::Distribution
   ResizeFunction:
     Properties:
-      CodeUri: s3://temp-code-imageresize-603dc2b8a1824080/97e8cab3ab7cacf7559bb0166fb9f042
+      CodeUri: s3://temp-code-redirector-742f758097d8982b/a038691ee6a57a2398e86e9d66add8da
       Environment:
         Variables:
           BUCKET:

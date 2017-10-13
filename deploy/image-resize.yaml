@@ -31,6 +31,36 @@ Resources:
               Principal: "*"
               Resource: !Sub arn:aws:s3:::${IMAGEBUCKET}/*
 
+  MyDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+        - Id: myS3Origin
+          DomainName: !GetAtt IMAGEBUCKET.DomainName
+          CustomOriginConfig:
+            HTTPPort: '80'
+            HTTPSPort: '443'
+            OriginProtocolPolicy: https-only
+        Enabled: 'true'
+        Comment: distribution for content delivery
+        DefaultRootObject: index.html
+        DefaultCacheBehavior:
+          TargetOriginId: myS3Origin
+          ForwardedValues:
+            QueryString: 'true'
+            QueryStringCacheKeys:
+              - d
+            Cookies:
+              Forward: 'none'
+          ViewerProtocolPolicy: allow-all
+          MinTTL: '100'
+          SmoothStreaming: 'false'
+          Compress: 'true'
+        PriceClass: PriceClass_All
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: 'true'
+
   ResizeFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -73,3 +103,8 @@ Outputs:
     Value: !Ref IMAGEBUCKET
     Export:
       Name: !Sub "${AWS::StackName}-ImageBucket"
+
+  MyDistribution:
+    Value: !Ref MyDistribution
+    Export:
+      Name: !Sub "${AWS::StackName}-MyDistribution"

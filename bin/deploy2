@@ -14,7 +14,7 @@ origin_request_function="$(aws cloudformation describe-stacks \
   --output json \
   --query 'Stacks[].Outputs[?OutputKey==`OriginRequestFunctionArn`].OutputValue' --output text)"
 
-origin_request_function_arn="$(aws lambda publish-version --function-name $origin_request_function \
+export origin_request_function_arn="$(aws lambda publish-version --function-name $origin_request_function \
 --query 'FunctionArn' --output text)"
 
 viewer_request_function="$(aws cloudformation describe-stacks \
@@ -23,23 +23,40 @@ viewer_request_function="$(aws cloudformation describe-stacks \
   --query 'Stacks[].Outputs[?OutputKey==`ViewerRequestFunctionArn`].OutputValue' --output text)"
 
 #publish a version
-viewer_request_function_arn="$(aws lambda publish-version --function-name $viewer_request_function \
+export viewer_request_function_arn="$(aws lambda publish-version --function-name $viewer_request_function \
 --query 'FunctionArn' --output text)"
 
 aws configure set default.region $deployment_region
 
-s3_origin_url="$(aws cloudformation describe-stacks \
-    --stack-name $stack_name \
-    --output json \
-    --query 'Stacks[].Outputs[?OutputKey==`BucketWebsiteUrl`].OutputValue' --output text)"
+mydistribution_id="$(aws cloudformation describe-stacks \
+  --stack-name $stack_name \
+  --output json \
+  --query 'Stacks[].Outputs[?OutputKey==`MyDistribution`].OutputValue' --output text)"
 
-s3_origin_url="$( echo $s3_origin_url | sed -e 's#^http://##')"
+aws cloudfront get-distribution-config \
+    --id $mydistribution_id --output json > ./mydistribution_org.json
 
-sed -e "s/S3_ORIGIN_URL/${s3_origin_url}/g" \
-    -e "s/ORIGIN-REQUEST-FUNCTION-ARN/${origin_request_function_arn}/g" \
-    -e "s/VIEWER-REQUEST-FUNCTION-ARN/${viewer_request_function_arn}/g" \
-    -e "s/UPDATE-TIME/$(date)/g" \
-    cloudformation/cf1.json > deploy/cf1.json
 
-#create a new CloudFront distribution
-#aws cloudfront create-distribution --distribution-config file://${PWD}/deploy/cf1.json
+#extract  distribution config
+cat ./mydistribution_org.json | jq .DistributionConfig \
+        > ./mydistribution.json
+
+#extract etag of distribution needed for updated
+etag=$(cat ./mydistribution_org.json | jq .ETag -r)
+
+#modify distribution to include lambda functions. The functions are read from environment variable 'env'
+cat ./mydistribution.json | jq '.DefaultCacheBehavior.LambdaFunctionAssociations |= {"Quantity": 2,
+"Items": [
+  {
+    "LambdaFunctionARN": env.origin_request_function_arn,
+    "EventType": "origin-request"
+  },
+  {
+    "LambdaFunctionARN": env.viewer_request_function_arn,
+    "EventType": "viewer-request"
+  }
+]}
+' > ./deploy/mydistribution.json
+
+aws cloudfront update-distribution --id $mydistribution_id --distribution-config \
+file://${PWD}/deploy/mydistribution.json --if-match "${etag}" --output json > ./update_cf.json
