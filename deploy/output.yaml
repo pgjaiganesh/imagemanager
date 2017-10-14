@@ -29,7 +29,7 @@ Outputs:
 Resources:
   Api:
     Properties:
-      DefinitionUri: s3://temp-code-redirector-090aaedb68e09802/7f2dd9d02cd89857b721c1da5f33dec1
+      DefinitionUri: s3://temp-code-redirector-5ce168d8876c6a23/ac5d9eab615e9f70b3980477c60bce70
       StageName: prod
       Variables:
         LambdaFunctionName:
@@ -93,7 +93,7 @@ Resources:
     Type: AWS::CloudFront::Distribution
   ResizeFunction:
     Properties:
-      CodeUri: s3://temp-code-redirector-090aaedb68e09802/ae9e894769bfc67ad568bc2facc6801b
+      CodeUri: s3://temp-code-redirector-5ce168d8876c6a23/e5c04b6b3c110a6b4b89054162ec69dc
       Environment:
         Variables:
           BUCKET:

@@ -1,18 +1,18 @@
 {
-    "ETag": "EP219MGEPC9WW",
+    "ETag": "E1PS80488FMURF",
     "Distribution": {
-        "Id": "E1M2X3JJD973B2",
-        "ARN": "arn:aws:cloudfront::444603092185:distribution/E1M2X3JJD973B2",
+        "Id": "E3FJ9QTWW8SVOL",
+        "ARN": "arn:aws:cloudfront::444603092185:distribution/E3FJ9QTWW8SVOL",
         "Status": "InProgress",
-        "LastModifiedTime": "2017-10-14T09:48:24.455Z",
+        "LastModifiedTime": "2017-10-14T16:00:31.282Z",
         "InProgressInvalidationBatches": 0,
-        "DomainName": "d368ghtf6f5vmf.cloudfront.net",
+        "DomainName": "dk838qtk42i6k.cloudfront.net",
         "ActiveTrustedSigners": {
             "Enabled": false,
             "Quantity": 0
         },
         "DistributionConfig": {
-            "CallerReference": "ImageManager3-MyDistribution-HIFCMP24J3UA",
+            "CallerReference": "ImageManager4-MyDistribution-8PSUMYGZ7E53",
             "Aliases": {
                 "Quantity": 0
             },
@@ -22,7 +22,7 @@
                 "Items": [
                     {
                         "Id": "myS3Origin",
-                        "DomainName": "imagemanager3-imagebucket-b4orzyr5wivk.s3-website-us-east-1.amazonaws.com",
+                        "DomainName": "imagemanager4-imagebucket-b1qejjtwyg14.s3-website.ap-south-1.amazonaws.com",
                         "OriginPath": "",
                         "CustomHeaders": {
                             "Quantity": 0
@@ -89,12 +89,12 @@
                     "Quantity": 2,
                     "Items": [
                         {
-                            "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager3-EdgeFunctions-ViewerRequestFunction-1RKVLN1U60KNW:1",
-                            "EventType": "viewer-request"
+                            "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager4-EdgeFunctions-OriginRequestFunction-1X97I61BDL0VR:3",
+                            "EventType": "origin-request"
                         },
                         {
-                            "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager3-EdgeFunctions-OriginRequestFunction-A6EAEJLCLZM1:1",
-                            "EventType": "origin-request"
+                            "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager4-EdgeFunctions-ViewerRequestFunction-G1EE32HEKGW3:2",
+                            "EventType": "viewer-request"
                         }
                     ]
                 }

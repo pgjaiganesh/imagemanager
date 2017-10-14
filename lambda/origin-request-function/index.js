@@ -66,22 +66,35 @@ exports.handler = (event, context, callback) => {
                             console.log("API Called :%s",content);
                         });
                         console.log("Time remaining2 :%s",context.getRemainingTimeInMillis());
+
+                        if(res.statusCode != 200){
+                          /*for all other conditions when the API GW request did not complete with
+                          success '200 Ok' fallback to the original image.
+                          Ex: from incoming url /images/100x100/webp/image.jpg parse
+                          original key /images/image.jpg
+                          */
+                          try {
+                            let match = key.match(/(.*)\/(\d+)x(\d+)\/(.*)\/(.*)/);
+                            request.uri = match[1]+"/"+match[5];
+                          }
+                          catch(err){
+                            //no prefix exist for image..
+                            console.log("no prefix present..");
+                            let match = key.match(/(\d+)x(\d+)\/(.*)\/(.*)/);
+                            request.uri = "/"+match[4];
+                          }
+
+                          console.log("Falling back to original url %s",request.uri);
+                          callback(null, request);
+                        }
+                        else{
+                          callback(null, request);
+                        }
                     });
                 }
-                else if(res.statusCode != 200){
-                  /*for all other conditions when the API GW request did not complete with
-                  success '200 Ok' fallback to the original image.
-                  Ex: from incoming url /images/100x100/webp/image.jpg parse
-                  original key /images/image.jpg
-                  */
-                  const match = path.match(/(.*)\/(\d+)x(\d+)\/(.*)\/(.*)/);
-                  if(match){
-                    request.uri = match[1]+"/"+match[5];
-                    console.log("Falling back to original url %s",request.uri);
-                  }
+                else{
+                    //allow the request to pass through for CloudFront to fetch the image from bucket
+                    callback(null, request);
                 }
-
-                //allow the request to pass through for CloudFront to fetch the image from bucket
-                callback(null, request);
             });
 };

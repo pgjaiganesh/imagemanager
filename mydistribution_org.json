@@ -1,7 +1,7 @@
 {
-    "ETag": "E2GQZYX585V892",
+    "ETag": "E3SMAD26YZFVYN",
     "DistributionConfig": {
-        "CallerReference": "ImageManager3-MyDistribution-HIFCMP24J3UA",
+        "CallerReference": "ImageManager4-MyDistribution-8PSUMYGZ7E53",
         "Aliases": {
             "Quantity": 0
         },
@@ -11,7 +11,7 @@
             "Items": [
                 {
                     "Id": "myS3Origin",
-                    "DomainName": "imagemanager3-imagebucket-b4orzyr5wivk.s3-website-us-east-1.amazonaws.com",
+                    "DomainName": "imagemanager4-imagebucket-b1qejjtwyg14.s3-website.ap-south-1.amazonaws.com",
                     "OriginPath": "",
                     "CustomHeaders": {
                         "Quantity": 0
@@ -75,7 +75,17 @@
             "MaxTTL": 31536000,
             "Compress": true,
             "LambdaFunctionAssociations": {
-                "Quantity": 0
+                "Quantity": 2,
+                "Items": [
+                    {
+                        "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager4-EdgeFunctions-OriginRequestFunction-1X97I61BDL0VR:2",
+                        "EventType": "origin-request"
+                    },
+                    {
+                        "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager4-EdgeFunctions-ViewerRequestFunction-G1EE32HEKGW3:2",
+                        "EventType": "viewer-request"
+                    }
+                ]
             }
         },
         "CacheBehaviors": {
