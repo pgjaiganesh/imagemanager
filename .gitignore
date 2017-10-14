@@ -1,0 +1,17 @@
+mydistribution.json
+mydistribution_org.json
+lambda/resize-function/node_modules
+lambda/resize-function/etc
+lambda/resize-function/.DS_Store
+lambda/origin-request-function/node_modules
+lambda/origin-request-function/.DS_Store
+lambda/viewer-request-function/node_modules
+lambda/viewer-request-function/.DS_Store
+dist/resize-function.zip
+dist/origin-request-function.zip
+dist/viewer-request-function.zip
+dist/.DS_Store
+deploy/mydistribution.json
+config.js
+update_cf.json
+.DS_Store
