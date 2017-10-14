@@ -39,7 +39,7 @@ You should see the cloudformation template deployment status in your AWS console
 (switch to your region of deployment). Takes a while to deploy the CloudFront distribution.  
 
 1.  Execute `make ef` to packages and deploys the CloudFormation template `cloudformation/edge-functions.yaml` for the two Lambda@Edge functions to handle 'Viewer-Request' and 'Origin-Request' Amazon CloudFront events. Also generates the `config.js` and packages into 'dist/origin-request-function.zip'.  
-Switch to the 'us-east-1' to view the deployment status of cloudformation template.
+Switch to the 'us-east-1' to view the deployment status of cloudformation template.  
   **Note:**  AWS Lambda@Edge needs to be deployed in `us-east-1` region.
 
 6.  Execute `make cf` to creates CloudFront distribution with custom origin as S3 website url created in `make resize`. Further publishes a new version of the AWS Lambda@Edge functions created in `make ef` step  and associates them to the appropriate event in the configuration. This initiates a CloudFront distribution updated and you can track the status from the AWS console or CLI
