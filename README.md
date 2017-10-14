@@ -5,7 +5,7 @@
 Ever been in a situation where you have tons of images and you want to create new dimensions, watermark them for an upcoming new design layout or you want to optimize image formats based on browser support.
 What if we could just create these dimensions on the fly as needed without having to preprocess them using AWS Lambda@Edge? You can save bandwidth and better user experience.
 
-Now with AWS Lambda@Edge along with AWS Lambda@Edge, Amazon CloudFront, Amazon API Gateway, Amazon S3 we can resize images, generate appropriate formats (webP) on the fly. For a given image URL, AWS Lambda@Edge allows for URL manipulation, checks whether the object exists on S3. Further if the object does not exist it invokes the resize function via Amazon API Gateway and stores the resized image on S3.
+Now with AWS Lambda@Edge along with Amazon API Gateway & AWS Lambda we can resize images, generate appropriate formats (eg: webP) on the fly. For a given image URL, AWS Lambda@Edge allows for URL manipulation, checks whether the object exists on S3. Further if the object does not exist it invokes the resize function via Amazon API Gateway and stores the resized image on S3.
 Subsequent requests are just served directly from S3.
 
 ## Setup
@@ -38,11 +38,11 @@ The deployed region can be configured in `$deployment_region` variable in `bin/c
 You should see the cloudformation template deployment status in your AWS console->CloudFormation.  
 (switch to your region of deployment). Takes a while to deploy the CloudFront distribution.  
 
-1.  Execute `make ef` to packages and deploys the CloudFormation template `cloudformation/edge-functions.yaml` for the two Lambda@Edge functions to handle 'Viewer-Request' and 'Origin-Request' Amazon CloudFront events. Also generates the `config.js` and packages into 'dist/origin-request-function.zip'.
+1.  Execute `make ef` to packages and deploys the CloudFormation template `cloudformation/edge-functions.yaml` for the two Lambda@Edge functions to handle 'Viewer-Request' and 'Origin-Request' Amazon CloudFront events. Also generates the `config.js` and packages into 'dist/origin-request-function.zip'.  
+Switch to the 'us-east-1' to view the deployment status of cloudformation template.
+  **Note:**  AWS Lambda@Edge needs to be deployed in `us-east-1` region.
 
-  **Note:** Please note to always deploy into `us-east-1` region as required by AWS Lambda@Edge.
-
-6.  Execute `make cf` to creates CloudFront distribution with custom origin as S3 website url created in `make resize`. Further creates a new version of the AWS Lambda@Edge functions created above and associates them to the appropriate event in the configuration.
+6.  Execute `make cf` to creates CloudFront distribution with custom origin as S3 website url created in `make resize`. Further publishes a new version of the AWS Lambda@Edge functions created in `make ef` step  and associates them to the appropriate event in the configuration. This initiates a CloudFront distribution updated and you can track the status from the AWS console or CLI
 
 ## Usage
 
