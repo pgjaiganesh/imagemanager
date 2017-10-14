@@ -1,9 +1,9 @@
 ## To setup environment on Amazon Linux EC2 instance
 
-1.  Update the packages on your instance
+1.  Update the packages on your instance  
 [ec2-user ~]$ sudo yum update -y
 
-1.  Install Docker
+1.  Install Docker  
 [ec2-user ~]$ sudo yum install docker -y
 
 Start the Docker Service
