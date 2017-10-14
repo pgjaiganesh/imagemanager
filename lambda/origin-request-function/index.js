@@ -9,8 +9,17 @@ exports.handler = (event, context, callback) => {
     const request = event.Records[0].cf.request;
 
     console.log("Request :%j",request);
-    console.log("config %j",config);
 
+    //parse the dimensions - width x height
+    const dimensionMatch = queryString.match(/d=(\d+)x(\d+)/);
+
+    //if there is no dimension attribute, just pass the request
+    if(!dimensionMatch){
+        callback(null, request);
+        return;
+    }
+
+    console.log("config %j",config);
     //set the S3 and API GW endpoints
     const BUCKET = config.image_bucket;
     const APIGW_URL = config.apigw_url+"?key=";
@@ -18,9 +27,6 @@ exports.handler = (event, context, callback) => {
 
     console.log("Bucket :%s",BUCKET);
     console.log("Hostname :%s",HOSTNAME);
-
-    //perform following action only for the /images/ path.
-    if (request.uri.includes('images') == true) {
 
         console.log("Time remaining1 :%s",context.getRemainingTimeInMillis());
 
@@ -73,9 +79,8 @@ exports.handler = (event, context, callback) => {
                     console.log("Falling back to original url %s",request.uri);
                   }
                 }
+
+                //allow the request to pass through for CloudFront to fetch the image from bucket
+                callback(null, request);
             });
-    }
-    //allow the request to pass through for CloudFront to fetch the image from bucket
-    callback(null, request);
-    //}
 };

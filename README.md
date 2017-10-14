@@ -50,8 +50,8 @@ Switch to the 'us-east-1' to view the deployment status of cloudformation templa
 
 2. Open your favorite browser and navigate to:
     https://{cloudfront-domain}/{image-name}?d=100x100
-    - cloudfront-domain - is available from the distribution created in the `make cf` step.
-    - 100x100 is the desired dimension
+    - cloudfront-domain - is available from the distribution created in the `make resize` step.
+    - 100x100 is the desired width & height
 
 ## License
 
