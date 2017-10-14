@@ -10,19 +10,20 @@ Subsequent requests are just served directly from S3.
 
 ## Setup
 
-1. Build the environment.
+1. Prerequisites.
 
     The image resize function uses [sharp][sharp] module which needs the `libvips` native extensions. The Lambda code along with dependencies must be build and packaged in Amazon Linux environment.
 
-    We will use a Docker container to build the packages locally. The Dockerfile is configured to download [Amazon Linux][amazon-linux], install Node.js 6.10.
+    - Install `docker` for your environment.
+      We will use a Docker container to build the packages locally. The Dockerfile is configured to download [Amazon Linux][amazon-linux] and install Node.js 6.10.
 
-    (If you do not want to use Dockers then follow [EC2 setup](ec2-setup.md) to see on how to setup environment and then follow the same sequence outlined below)
+    - Install the latest version of [AWS CLI][cli] used for deployment.
 
-    Install the latest version of [AWS CLI][cli] used for deployment.
+    - Install `jq` which allows us to parse JSON format from command line. This is used in the `make cf`
+      step below.
+      https://stedolan.github.io/jq/download/
 
-    Install `jq` which allows us to parse JSON format from command line. This is used in the `make cf`
-    step below.
-    https://stedolan.github.io/jq/download/
+    (To set the environment on a Amazon Linux EC2 instance follow [EC2 setup](ec2-setup.md) and then proceed with sequence outlined below)
 
 1. Execute `make all`. This command takes a while to complete.
 
