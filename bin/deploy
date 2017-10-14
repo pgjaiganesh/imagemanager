@@ -7,21 +7,20 @@
 aws configure set default.region $deployment_region
 region="$(aws configure get region)"
 
+#replace the REGION and ACCOUNT_ID variables as per settings.
 sed -e "s/REGION/${region}/g" -e "s/ACCOUNT_ID/${account_id}/g" \
-  cloudformation/api-template.yaml > deploy/api.yaml
+  cloudformation/api-template.yaml > deploy/api-template.yaml
 
-sed -e "s/ACCOUNT_ID/${account_id}/g" \
-    cloudformation/image-resize.yaml > deploy/image-resize.yaml
-
+#create temporary bucket for code deployment
 aws s3 mb "s3://${code_bucket_name}"
 
 aws cloudformation package \
-  --output-template-file=deploy/output.yaml \
+  --output-template-file=deploy/image-resize.yaml \
   --template-file=deploy/image-resize.yaml \
   --s3-bucket="${code_bucket_name}" \
 
 aws cloudformation deploy \
-  --template-file=deploy/output.yaml \
+  --template-file=deploy/image-resize.yaml \
   --stack-name="${stack_name}" \
   --capabilities=CAPABILITY_NAMED_IAM
 

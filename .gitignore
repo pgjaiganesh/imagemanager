@@ -11,7 +11,7 @@ dist/resize-function.zip
 dist/origin-request-function.zip
 dist/viewer-request-function.zip
 dist/.DS_Store
-deploy/mydistribution.json
+deploy/*
 config.js
 update_cf.json
 .DS_Store

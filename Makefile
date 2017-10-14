@@ -32,4 +32,5 @@ clean:
 	rm -rf lambda/viewer-request-function/node_modules
 	rm -rf lambda/origin-request-function/node_modules
 	rm -rf dist/*
+	rm -rf deploy/*
 	docker rmi --force amazonlinux:nodejs

@@ -14,6 +14,7 @@ aws cloudformation describe-stacks \
   --query Stacks[].Outputs \
   --output table
 
+#read the S3 bucket ARN from Outputs field of first template deployed
 s3_image_bucket_arn="$(aws cloudformation describe-stacks \
     --stack-name $stack_name \
     --output json \
@@ -38,9 +39,6 @@ zip -r ${PWD}/dist/origin-request-function.zip config.js
 
 #switch to us-east-1 before deploying the Lambda@Edge functions
 aws configure set default.region $edge_function_region
-
-sed -e "s/ACCOUNT_ID/${account_id}/g" \
-    cloudformation/edge-functions.yaml > deploy/edge-functions.yaml
 
 code_bucket_name="temp-code-imageresize-$(openssl rand -hex 8)"
 #create temporary bucket for cloudformation deployment

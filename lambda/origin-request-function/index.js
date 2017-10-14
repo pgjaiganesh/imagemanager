@@ -70,7 +70,7 @@ exports.handler = (event, context, callback) => {
                         if(res.statusCode != 200){
                           /*for all other conditions when the API GW request did not complete with
                           success '200 Ok' fallback to the original image.
-                          Ex: from incoming url /images/100x100/webp/image.jpg parse
+                          Ex: from incoming url /images/100x100/webp/image.jpg fallback to 
                           original key /images/image.jpg
                           */
                           try {
