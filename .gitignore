@@ -1,5 +1,3 @@
-mydistribution.json
-mydistribution_org.json
 lambda/resize-function/node_modules
 lambda/resize-function/etc
 lambda/resize-function/.DS_Store
@@ -11,7 +9,12 @@ dist/resize-function.zip
 dist/origin-request-function.zip
 dist/viewer-request-function.zip
 dist/.DS_Store
-deploy/*
+deploy/api-template.yaml
+deploy/edge-functions.yaml
+deploy/image-resize.yaml
+deploy/mydistribution.json
+mydistribution.json
+mydistribution_org.json
 config.js
 update_cf.json
 .DS_Store

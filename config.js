@@ -1,1 +1,0 @@
-var config = module.exports = {image_bucket:"imagemanager-imagebucket-8hs4lkt73nqo",apigw_url:"https://lopsz4kx0c.execute-api.ap-south-1.amazonaws.com/prod",image_bucket_url:"http://imagemanager-imagebucket-8hs4lkt73nqo.s3-website.ap-south-1.amazonaws.com"}
