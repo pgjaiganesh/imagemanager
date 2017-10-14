@@ -22,5 +22,5 @@
 1.  Clone the repo  
 [ec2-user ~]$ git clone https://github.com/pgjaiganesh/imagemanager/
 
-Change directory to repository created and follow instructions in 'README.md'  
+1.  Change directory to repository created and follow instructions in [README](README.md)  
 [ec2-user ~]$ cd imagemanager
