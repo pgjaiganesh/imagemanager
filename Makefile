@@ -28,7 +28,8 @@ cf:
 	./bin/deploy2
 
 clean:
-	rm -r lambda/resize-function/node_modules
-	rm -r lambda/viewer-request-function/node_modules
-	rm -r lambda/origin-request-function/node_modules
+	rm -rf lambda/resize-function/node_modules
+	rm -rf lambda/viewer-request-function/node_modules
+	rm -rf lambda/origin-request-function/node_modules
+	rm -rf dist/*
 	docker rmi --force amazonlinux:nodejs

@@ -1,8 +1,0 @@
-{
-  "name": "origin-request-function",
-  "version": "1.0.0",
-  "description": "Checks S3 for object and calls API GW for image generation if necessary",
-  "main": "index.js",
-  "author": "JaiGanesh",
-  "license": "ISC"
-}
