@@ -20,7 +20,7 @@
 [ec2-user ~]$ sudo yum install git -y
 
 1.  Clone the repo  
-git clone https://github.com/pgjaiganesh/imagemanager/
+[ec2-user ~]$ git clone https://github.com/pgjaiganesh/imagemanager/
 
 Change directory to repository created and follow instructions in 'README.md'  
-cd imagemanager
+[ec2-user ~]$ cd imagemanager
