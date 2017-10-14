@@ -17,7 +17,9 @@ Subsequent requests are just served directly from S3.
     - Install `docker` for your environment.
       We will use a Docker container to build the packages locally. The Dockerfile is configured to download [Amazon Linux][amazon-linux] and install Node.js 6.10.
 
-    - Install the latest version of [AWS CLI][cli] used for deployment.
+    - Install the latest version of [AWS CLI][cli] and configure using  
+      `aws configure`  
+      More info http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
 
     - Install `jq` which allows us to parse JSON format files from command line used in `make cf` step.  
       https://stedolan.github.io/jq/download/
@@ -32,7 +34,9 @@ Subsequent requests are just served directly from S3.
     - ./dist/origin-request-function.zip - contains Lambda@Edge code for 'Origin-Request' event.
 
 1.  Execute `make resize` to packages and deploy the CloudFormation template `cloudformation/image-resize.yaml` which defines the API Gateway and AWS Lambda function for Image resize.
-The deployed region can be configured in `$deployment_region` variable in `bin/config` script.
+The deployed region can be configured in `$deployment_region` variable in `bin/config` script.  
+You should see the cloudformation template deployment status in your AWS console->CloudFormation.  
+(switch to your region of deployment). Takes a while to deploy the CloudFront distribution.  
 
 1.  Execute `make ef` to packages and deploys the CloudFormation template `cloudformation/edge-functions.yaml` for the two Lambda@Edge functions to handle 'Viewer-Request' and 'Origin-Request' Amazon CloudFront events. Also generates the `config.js` and packages into 'dist/origin-request-function.zip'.
 
