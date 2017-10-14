@@ -6,7 +6,7 @@ Resources:
   Api:
     Type: AWS::Serverless::Api
     Properties:
-      DefinitionUri: ./deploy/api-template.yaml
+      DefinitionUri: api-template.yaml
       StageName: prod
       Variables:
         LambdaFunctionName: !Ref ResizeFunction
