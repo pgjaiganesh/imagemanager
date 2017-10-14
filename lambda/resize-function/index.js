@@ -59,6 +59,7 @@ exports.handler = function(event, context, callback) {
         ContentType: 'image/'+requiredFormat,
         CacheControl: 'max-age=86400',
         Key: key,
+        StorageClass: 'REDUCED_REDUNDANCY'
       }).promise();
       //return a success message
       callback(null, {
