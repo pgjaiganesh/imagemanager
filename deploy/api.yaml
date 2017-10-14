@@ -6,6 +6,6 @@ paths:
   /:
     get:
       x-amazon-apigateway-integration:
-        uri: arn:aws:apigateway:ap-south-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-south-1:444603092185:function:${stageVariables.LambdaFunctionName}/invocations
+        uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:444603092185:function:${stageVariables.LambdaFunctionName}/invocations
         type: AWS_PROXY
         httpMethod: post

@@ -11,7 +11,7 @@ Resources:
       Variables:
         LambdaFunctionName: !Ref ResizeFunction
 
-  IMAGEBUCKET:
+  ImageBucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     Properties:
@@ -22,14 +22,14 @@ Resources:
   ImageBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref IMAGEBUCKET
+      Bucket: !Ref ImageBucket
       PolicyDocument:
         Statement:
             - Action:
                 - s3:GetObject
               Effect: Allow
               Principal: "*"
-              Resource: !Sub arn:aws:s3:::${IMAGEBUCKET}/*
+              Resource: !Sub arn:aws:s3:::${ImageBucket}/*
 
   MyDistribution:
     Type: AWS::CloudFront::Distribution
@@ -37,11 +37,11 @@ Resources:
       DistributionConfig:
         Origins:
         - Id: myS3Origin
-          DomainName: !GetAtt IMAGEBUCKET.DomainName
+          DomainName: !Select [1, !Split ["//",!GetAtt ImageBucket.WebsiteURL ]]
           CustomOriginConfig:
             HTTPPort: '80'
             HTTPSPort: '443'
-            OriginProtocolPolicy: https-only
+            OriginProtocolPolicy: http-only
         Enabled: 'true'
         Comment: distribution for content delivery
         DefaultRootObject: index.html
@@ -71,13 +71,13 @@ Resources:
       Timeout: 1
       Environment:
         Variables:
-          BUCKET: !Ref IMAGEBUCKET
+          BUCKET: !Ref ImageBucket
       Policies:
           Statement:
               Action:
                 - s3:GetObject
                 - s3:PutObject
-              Resource: !Sub arn:aws:s3:::${IMAGEBUCKET}/*
+              Resource: !Sub arn:aws:s3:::${ImageBucket}/*
               Effect: Allow
 
   ResizeFunctionPermission:
@@ -90,7 +90,7 @@ Resources:
 
 Outputs:
   BucketWebsiteUrl:
-    Value: !GetAtt IMAGEBUCKET.WebsiteURL
+    Value: !GetAtt ImageBucket.WebsiteURL
     Export:
       Name: !Sub "${AWS::StackName}-BucketWebsiteUrl"
 
@@ -100,7 +100,7 @@ Outputs:
       Name: !Sub "${AWS::StackName}-APIGWUrl"
 
   ImageBucket:
-    Value: !Ref IMAGEBUCKET
+    Value: !Ref ImageBucket
     Export:
       Name: !Sub "${AWS::StackName}-ImageBucket"
 

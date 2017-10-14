@@ -1,0 +1,123 @@
+AWSTemplateFormatVersion: 2010-09-09
+Outputs:
+  APIGWUrl:
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-APIGWUrl
+    Value:
+      Fn::Sub: https://${Api}.execute-api.${AWS::Region}.amazonaws.com/prod
+  BucketWebsiteUrl:
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-BucketWebsiteUrl
+    Value:
+      Fn::GetAtt:
+      - ImageBucket
+      - WebsiteURL
+  ImageBucket:
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-ImageBucket
+    Value:
+      Ref: ImageBucket
+  MyDistribution:
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-MyDistribution
+    Value:
+      Ref: MyDistribution
+Resources:
+  Api:
+    Properties:
+      DefinitionUri: s3://temp-code-redirector-090aaedb68e09802/7f2dd9d02cd89857b721c1da5f33dec1
+      StageName: prod
+      Variables:
+        LambdaFunctionName:
+          Ref: ResizeFunction
+    Type: AWS::Serverless::Api
+  ImageBucket:
+    DeletionPolicy: Retain
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+    Type: AWS::S3::Bucket
+  ImageBucketPolicy:
+    Properties:
+      Bucket:
+        Ref: ImageBucket
+      PolicyDocument:
+        Statement:
+        - Action:
+          - s3:GetObject
+          Effect: Allow
+          Principal: '*'
+          Resource:
+            Fn::Sub: arn:aws:s3:::${ImageBucket}/*
+    Type: AWS::S3::BucketPolicy
+  MyDistribution:
+    Properties:
+      DistributionConfig:
+        Comment: distribution for content delivery
+        DefaultCacheBehavior:
+          Compress: 'true'
+          ForwardedValues:
+            Cookies:
+              Forward: none
+            QueryString: 'true'
+            QueryStringCacheKeys:
+            - d
+          MinTTL: '100'
+          SmoothStreaming: 'false'
+          TargetOriginId: myS3Origin
+          ViewerProtocolPolicy: allow-all
+        DefaultRootObject: index.html
+        Enabled: 'true'
+        Origins:
+        - CustomOriginConfig:
+            HTTPPort: '80'
+            HTTPSPort: '443'
+            OriginProtocolPolicy: http-only
+          DomainName:
+            Fn::Select:
+            - 1
+            - Fn::Split:
+              - //
+              - Fn::GetAtt:
+                - ImageBucket
+                - WebsiteURL
+          Id: myS3Origin
+        PriceClass: PriceClass_All
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: 'true'
+    Type: AWS::CloudFront::Distribution
+  ResizeFunction:
+    Properties:
+      CodeUri: s3://temp-code-redirector-090aaedb68e09802/ae9e894769bfc67ad568bc2facc6801b
+      Environment:
+        Variables:
+          BUCKET:
+            Ref: ImageBucket
+      Handler: index.handler
+      MemorySize: 1536
+      Policies:
+        Statement:
+          Action:
+          - s3:GetObject
+          - s3:PutObject
+          Effect: Allow
+          Resource:
+            Fn::Sub: arn:aws:s3:::${ImageBucket}/*
+      Runtime: nodejs6.10
+      Timeout: 1
+    Type: AWS::Serverless::Function
+  ResizeFunctionPermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: ResizeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${Api}/*
+    Type: AWS::Lambda::Permission
+Transform: AWS::Serverless-2016-10-31

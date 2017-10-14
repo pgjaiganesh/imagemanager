@@ -1,0 +1,110 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  Api:
+    Type: AWS::Serverless::Api
+    Properties:
+      DefinitionUri: api.yaml
+      StageName: prod
+      Variables:
+        LambdaFunctionName: !Ref ResizeFunction
+
+  ImageBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+
+  ImageBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ImageBucket
+      PolicyDocument:
+        Statement:
+            - Action:
+                - s3:GetObject
+              Effect: Allow
+              Principal: "*"
+              Resource: !Sub arn:aws:s3:::${ImageBucket}/*
+
+  MyDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+        - Id: myS3Origin
+          DomainName: !Select [1, !Split ["//",!GetAtt ImageBucket.WebsiteURL ]]
+          CustomOriginConfig:
+            HTTPPort: '80'
+            HTTPSPort: '443'
+            OriginProtocolPolicy: http-only
+        Enabled: 'true'
+        Comment: distribution for content delivery
+        DefaultRootObject: index.html
+        DefaultCacheBehavior:
+          TargetOriginId: myS3Origin
+          ForwardedValues:
+            QueryString: 'true'
+            QueryStringCacheKeys:
+              - d
+            Cookies:
+              Forward: 'none'
+          ViewerProtocolPolicy: allow-all
+          MinTTL: '100'
+          SmoothStreaming: 'false'
+          Compress: 'true'
+        PriceClass: PriceClass_All
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: 'true'
+
+  ResizeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../dist/resize-function.zip
+      Handler: index.handler
+      Runtime: nodejs6.10
+      MemorySize: 1536
+      Timeout: 1
+      Environment:
+        Variables:
+          BUCKET: !Ref ImageBucket
+      Policies:
+          Statement:
+              Action:
+                - s3:GetObject
+                - s3:PutObject
+              Resource: !Sub arn:aws:s3:::${ImageBucket}/*
+              Effect: Allow
+
+  ResizeFunctionPermission:
+   Type: AWS::Lambda::Permission
+   Properties:
+     FunctionName: !Ref ResizeFunction
+     Action: lambda:InvokeFunction
+     Principal: apigateway.amazonaws.com
+     SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${Api}/*
+
+Outputs:
+  BucketWebsiteUrl:
+    Value: !GetAtt ImageBucket.WebsiteURL
+    Export:
+      Name: !Sub "${AWS::StackName}-BucketWebsiteUrl"
+
+  APIGWUrl:
+    Value: !Sub https://${Api}.execute-api.${AWS::Region}.amazonaws.com/prod
+    Export:
+      Name: !Sub "${AWS::StackName}-APIGWUrl"
+
+  ImageBucket:
+    Value: !Ref ImageBucket
+    Export:
+      Name: !Sub "${AWS::StackName}-ImageBucket"
+
+  MyDistribution:
+    Value: !Ref MyDistribution
+    Export:
+      Name: !Sub "${AWS::StackName}-MyDistribution"

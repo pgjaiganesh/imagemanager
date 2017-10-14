@@ -7,6 +7,7 @@ const https = require('https');
 
 exports.handler = (event, context, callback) => {
     const request = event.Records[0].cf.request;
+    const queryString = request.querystring;
 
     console.log("Request :%j",request);
 

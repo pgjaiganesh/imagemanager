@@ -1,1 +1,1 @@
-var config = module.exports = {image_bucket:"imagemanager-imagebucket-132exspf1grey",apigw_url:"https://v8j30qidh4.execute-api.ap-south-1.amazonaws.com/prod",image_bucket_url:"http://imagemanager-imagebucket-132exspf1grey.s3-website.ap-south-1.amazonaws.com"}
+var config = module.exports = {image_bucket:"imagemanager3-imagebucket-b4orzyr5wivk",apigw_url:"https://64esbw5xnc.execute-api.us-east-1.amazonaws.com/prod",image_bucket_url:"http://imagemanager3-imagebucket-b4orzyr5wivk.s3-website-us-east-1.amazonaws.com"}

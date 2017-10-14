@@ -10,22 +10,38 @@ const BUCKET = process.env.BUCKET;
 
 exports.handler = function(event, context, callback) {
   const key = event.queryStringParameters.key;
+  console.log("Required image :%s",key);
   /*
   parse the prefix, width, height and image name
   //Ex: key=images/200x200/webp/image.jpg
   */
-  const match = key.match(/(.*)\/(\d+)x(\d+)\/(.*)\/(.*)/);
-  const prefix = match[1];
-  const width = parseInt(match[2],10);
-  const height = parseInt(match[3],10);
-  const requiredFormat = match[4] == "jpg"?"jpeg":match[4];//correction for jpg required for 'Sharp'
-  const imageName = match[5];
-  const originalKey = prefix+"/"+imageName;
+  let prefix,originalKey,match,width,height,requiredFormat,imageName;
+  let startIndex;
 
+  try {
+    match = key.match(/(.*)\/(\d+)x(\d+)\/(.*)\/(.*)/);
+    prefix = match[1];
+    width = parseInt(match[2],10);
+    height = parseInt(match[3],10);
+    requiredFormat = match[4] == "jpg"?"jpeg":match[4];//correction for jpg required for 'Sharp'
+    imageName = match[5];
+    originalKey = prefix+"/"+imageName;
+  }
+  catch(err){
+    //no prefix exist for image..
+    console.log("no prefix present..");
+    match = key.match(/(\d+)x(\d+)\/(.*)\/(.*)/);
+    width = parseInt(match[1],10);
+    height = parseInt(match[2],10);
+    requiredFormat = match[3] == "jpg"?"jpeg":match[3];//correction for jpg required for 'Sharp'
+    imageName = match[4];
+    originalKey = imageName;
+  }
+
+  console.log("Path prefix :%s",prefix);
   console.log("original key :%s",originalKey);
   console.log("requiredFormat :%s",requiredFormat);
   console.log("Width - Height: %d - %d",width,height);
-  console.log("Path prefix :%s",prefix);
 
   //get the source image file
   S3.getObject({Bucket: BUCKET, Key: originalKey}).promise()

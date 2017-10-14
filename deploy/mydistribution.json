@@ -1,5 +1,5 @@
 {
-  "CallerReference": "ImageManager-MyDistribution-1CGA630ZWLT8I",
+  "CallerReference": "ImageManager3-MyDistribution-HIFCMP24J3UA",
   "Aliases": {
     "Quantity": 0
   },
@@ -9,7 +9,7 @@
     "Items": [
       {
         "Id": "myS3Origin",
-        "DomainName": "imagemanager-imagebucket-132exspf1grey.s3.amazonaws.com",
+        "DomainName": "imagemanager3-imagebucket-b4orzyr5wivk.s3-website-us-east-1.amazonaws.com",
         "OriginPath": "",
         "CustomHeaders": {
           "Quantity": 0
@@ -17,7 +17,7 @@
         "CustomOriginConfig": {
           "HTTPPort": 80,
           "HTTPSPort": 443,
-          "OriginProtocolPolicy": "https-only",
+          "OriginProtocolPolicy": "http-only",
           "OriginSslProtocols": {
             "Quantity": 2,
             "Items": [
@@ -76,11 +76,11 @@
       "Quantity": 2,
       "Items": [
         {
-          "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager-EdgeFunctions-OriginRequestFunction-12GKOCRCCCW03:17",
+          "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager3-EdgeFunctions-OriginRequestFunction-A6EAEJLCLZM1:1",
           "EventType": "origin-request"
         },
         {
-          "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager-EdgeFunctions-ViewerRequestFunction-XJUB8VTAKEAH:17",
+          "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager3-EdgeFunctions-ViewerRequestFunction-1RKVLN1U60KNW:1",
           "EventType": "viewer-request"
         }
       ]

@@ -1,18 +1,18 @@
 {
-    "ETag": "E16CRSIBAG1GQU",
+    "ETag": "EP219MGEPC9WW",
     "Distribution": {
-        "Id": "E3KQ0TE18MS18M",
-        "ARN": "arn:aws:cloudfront::444603092185:distribution/E3KQ0TE18MS18M",
+        "Id": "E1M2X3JJD973B2",
+        "ARN": "arn:aws:cloudfront::444603092185:distribution/E1M2X3JJD973B2",
         "Status": "InProgress",
-        "LastModifiedTime": "2017-10-13T11:33:22.525Z",
+        "LastModifiedTime": "2017-10-14T09:48:24.455Z",
         "InProgressInvalidationBatches": 0,
-        "DomainName": "d3llrtk6t999rp.cloudfront.net",
+        "DomainName": "d368ghtf6f5vmf.cloudfront.net",
         "ActiveTrustedSigners": {
             "Enabled": false,
             "Quantity": 0
         },
         "DistributionConfig": {
-            "CallerReference": "ImageManager-MyDistribution-1CGA630ZWLT8I",
+            "CallerReference": "ImageManager3-MyDistribution-HIFCMP24J3UA",
             "Aliases": {
                 "Quantity": 0
             },
@@ -22,7 +22,7 @@
                 "Items": [
                     {
                         "Id": "myS3Origin",
-                        "DomainName": "imagemanager-imagebucket-132exspf1grey.s3.amazonaws.com",
+                        "DomainName": "imagemanager3-imagebucket-b4orzyr5wivk.s3-website-us-east-1.amazonaws.com",
                         "OriginPath": "",
                         "CustomHeaders": {
                             "Quantity": 0
@@ -30,7 +30,7 @@
                         "CustomOriginConfig": {
                             "HTTPPort": 80,
                             "HTTPSPort": 443,
-                            "OriginProtocolPolicy": "https-only",
+                            "OriginProtocolPolicy": "http-only",
                             "OriginSslProtocols": {
                                 "Quantity": 2,
                                 "Items": [
@@ -89,12 +89,12 @@
                     "Quantity": 2,
                     "Items": [
                         {
-                            "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager-EdgeFunctions-OriginRequestFunction-12GKOCRCCCW03:17",
-                            "EventType": "origin-request"
+                            "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager3-EdgeFunctions-ViewerRequestFunction-1RKVLN1U60KNW:1",
+                            "EventType": "viewer-request"
                         },
                         {
-                            "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager-EdgeFunctions-ViewerRequestFunction-XJUB8VTAKEAH:17",
-                            "EventType": "viewer-request"
+                            "LambdaFunctionARN": "arn:aws:lambda:us-east-1:444603092185:function:ImageManager3-EdgeFunctions-OriginRequestFunction-A6EAEJLCLZM1:1",
+                            "EventType": "origin-request"
                         }
                     ]
                 }

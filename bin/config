@@ -6,10 +6,10 @@ set -o xtrace
 #Lamba functions will get deployment. Note: Do not change edge_function_region
 #as Lambda@Edge function must be deployed us-east-1 region only.
 
-stack_name=ImageManager
+stack_name=ImageManager3
 stack_name_ef=$stack_name-EdgeFunctions
 edge_function_region=us-east-1
-deployment_region=ap-south-1
+deployment_region=us-east-1
 code_bucket_name="temp-code-redirector-$(openssl rand -hex 8)"
 
 account_id="$(aws sts get-caller-identity --query Account --output text \

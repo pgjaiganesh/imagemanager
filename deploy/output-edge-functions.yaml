@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: 2010-09-09
+Outputs:
+  OriginRequestFunctionArn:
+    Value:
+      Fn::GetAtt:
+      - OriginRequestFunction
+      - Arn
+  RoleArn:
+    Value:
+      Fn::GetAtt:
+      - EdgeLambdaRole
+      - Arn
+  ViewerRequestFunctionArn:
+    Value:
+      Fn::GetAtt:
+      - ViewerRequestFunction
+      - Arn
+Resources:
+  EdgeLambdaRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+            - edgelambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Path: /service-role/
+    Type: AWS::IAM::Role
+  OriginRequestFunction:
+    Properties:
+      CodeUri: s3://temp-code-imageresize-0ea92cd1082fdf00/a4f96477ba4d63addd370499d7e7136c
+      Handler: index.handler
+      MemorySize: 128
+      Role:
+        Fn::GetAtt:
+        - EdgeLambdaRole
+        - Arn
+      Runtime: nodejs6.10
+      Timeout: 3
+    Type: AWS::Serverless::Function
+  ViewerRequestFunction:
+    Properties:
+      CodeUri: s3://temp-code-imageresize-0ea92cd1082fdf00/a2088bedd02432c5c0c25d6b7ef57e0e
+      Handler: index.handler
+      MemorySize: 128
+      Role:
+        Fn::GetAtt:
+        - EdgeLambdaRole
+        - Arn
+      Runtime: nodejs6.10
+      Timeout: 1
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31
