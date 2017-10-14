@@ -19,8 +19,8 @@ Subsequent requests are just served directly from S3.
 
     - Install the latest version of [AWS CLI][cli] used for deployment.
 
-    - Install `jq` which allows us to parse JSON format from command line. This is used in the `make cf`
-      step below.
+    - Install `jq` which allows us to parse JSON format files from command line.
+      This is used in the `make cf` step below.
       https://stedolan.github.io/jq/download/
 
     (To set the environment on a Amazon Linux EC2 instance follow [EC2 setup](ec2-setup.md) and then proceed with sequence outlined below)
