@@ -9,7 +9,7 @@ wheneven you make changes to the lambda code, this command builds them in the am
 environment and packages as zip file into the ./dist folder
 
 - `make resize`
-Packages and deploys the CloudFormation template for API Gateway and AWS Lambda function for
+Packages and deploys the CloudFormation template for CloudFront distribution, API Gateway and AWS Lambda function for
 image resizing into the deployment region (variable specified in ./bin/config)
 
 - `make ef`
@@ -18,5 +18,4 @@ viewer-request and origin-request events. Also generates the config.js and packa
 origin-request lambda function zip.
 
 - `make cf`
-Creates CloudFront distribution with custom origin as S3 website url created in ./bin/deploy,
-creates lambda edge function versions and associates them to the distribution
+Publishes lambda edge function versions and associates them to the distribution
