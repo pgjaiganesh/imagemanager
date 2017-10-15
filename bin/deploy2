@@ -36,7 +36,6 @@ mydistribution_id="$(aws cloudformation describe-stacks \
 aws cloudfront get-distribution-config \
     --id $mydistribution_id --output json > ./mydistribution_org.json
 
-
 #extract  distribution config
 cat ./mydistribution_org.json | jq .DistributionConfig \
         > ./mydistribution.json
@@ -61,5 +60,5 @@ cat ./mydistribution.json | jq '.DefaultCacheBehavior.LambdaFunctionAssociations
 aws cloudfront update-distribution --id $mydistribution_id --distribution-config \
 file://${PWD}/deploy/mydistribution.json --if-match "${etag}" --output json > ./update_cf.json
 
-echo "waiting for distribution with Id $mydistribution_id to deploy.."
+echo "waiting for distribution with Id $mydistribution_id to update.."
 aws cloudfront wait distribution-deployed --id $mydistribution_id
