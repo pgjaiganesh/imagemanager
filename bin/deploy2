@@ -1,8 +1,8 @@
 #!/bin/bash
 
 . ./bin/config
-#creates a CloudFront distribution, publishes a new Lambda@Edge function
-#version and associates it to the appropriate events in the CloudFront distribution
+#publishes a new Lambda@Edge function version and associates it to the
+#appropriate events in the CloudFront distribution  
 
 aws configure set default.region $edge_function_region
 aws configure set preview.cloudfront true
