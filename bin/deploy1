@@ -46,7 +46,7 @@ aws s3 mb "s3://${code_bucket_name}"
 
 aws cloudformation package \
   --output-template-file=deploy/output-edge-functions.yaml \
-  --template-file=deploy/edge-functions.yaml \
+  --template-file=cloudformation/edge-functions.yaml \
   --s3-bucket="${code_bucket_name}" \
 
 aws cloudformation deploy \
