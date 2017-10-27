@@ -2,14 +2,24 @@ AWSTemplateFormatVersion: 2010-09-09
 
 Transform: AWS::Serverless-2016-10-31
 
+Parameters:
+  DeploymentRegion:
+    Type: String
+    Description: Region for API Gateway and Image Resize function to be deployed
+    Default: ap-south-1
+
 Resources:
   Api:
     Type: AWS::Serverless::Api
     Properties:
-      DefinitionUri: ../deploy/api-template.yaml
       StageName: prod
       Variables:
         LambdaFunctionName: !Ref ResizeFunction
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: s3://imageresize-lambdaedge-ap-south-1/cloudformation/api-template.yaml
 
   ImageBucket:
     Type: AWS::S3::Bucket
