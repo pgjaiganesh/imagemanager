@@ -47,6 +47,9 @@ Resources:
         DefaultRootObject: index.html
         DefaultCacheBehavior:
           TargetOriginId: myS3Origin
+          LambdaFunctionAssociations:
+            - EventType: 'viewer-request'
+              LambdaFunctionARN: ''
           ForwardedValues:
             QueryString: 'true'
             QueryStringCacheKeys:

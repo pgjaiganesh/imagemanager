@@ -30,6 +30,12 @@ Resources:
       Timeout: 1
       Role: !GetAtt EdgeLambdaRole.Arn
 
+  ViewerRequestFunctionVersion:
+    Type: "AWS::Lambda::Version"
+    Properties:
+      FunctionName: !Ref ViewerRequestFunction
+      Description: "A version of ViewerRequestFunction"
+
   OriginRequestFunction:
    Type: AWS::Serverless::Function
    Properties:
@@ -40,6 +46,67 @@ Resources:
      Timeout: 3
      Role: !GetAtt EdgeLambdaRole.Arn
 
+  OriginRequestFunctionVersion:
+    Type: "AWS::Lambda::Version"
+    Properties:
+      FunctionName: !Ref OriginRequestFunction
+      Description: "A version of OriginRequestFunction"
+
+  ImageBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+
+  ImageBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ImageBucket
+      PolicyDocument:
+        Statement:
+            - Action:
+                - s3:GetObject
+              Effect: Allow
+              Principal: "*"
+              Resource: !Sub arn:aws:s3:::${ImageBucket}/*
+
+  MyDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+        - Id: myS3Origin
+          DomainName: !Select [1, !Split ["//",!GetAtt ImageBucket.WebsiteURL ]]
+          CustomOriginConfig:
+            HTTPPort: '80'
+            HTTPSPort: '443'
+            OriginProtocolPolicy: http-only
+        Enabled: 'true'
+        Comment: distribution for content delivery
+        DefaultRootObject: index.html
+        DefaultCacheBehavior:
+          TargetOriginId: myS3Origin
+          LambdaFunctionAssociations:
+            - EventType: 'viewer-request'
+              LambdaFunctionARN: !Ref ViewerRequestFunctionVersion
+            - EventType: 'origin-request'
+              LambdaFunctionARN: !Ref OriginRequestFunctionVersion
+          ForwardedValues:
+            QueryString: 'true'
+            QueryStringCacheKeys:
+              - d
+              - test
+            Cookies:
+              Forward: 'none'
+          ViewerProtocolPolicy: allow-all
+          MinTTL: '100'
+          SmoothStreaming: 'false'
+          Compress: 'true'
+        PriceClass: PriceClass_All
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: 'true'
 Outputs:
   OriginRequestFunctionArn:
     Value: !GetAtt OriginRequestFunction.Arn

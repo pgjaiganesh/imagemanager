@@ -11,8 +11,6 @@ const S3 = new AWS.S3({
 });
 const Sharp = require('sharp');
 
-const BUCKET = 'im3-imagebucket-1d5ox7axuw6rw';
-
 exports.handler = (event, context, callback) => {
     const request = event.Records[0].cf.request;
     const queryString = request.querystring;
@@ -117,6 +115,11 @@ exports.handler = (event, context, callback) => {
                         }).promise();
                         //return a success message
                         callback(null, request);
+                        // callback(null,
+                        //   {
+                        //     status: '200',
+                        //     body: buffer
+                        // });
                       })
                       .catch(err => {
                         try {
