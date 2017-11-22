@@ -4,5 +4,8 @@
   "description": "Checks S3 for object and calls API GW for image generation if necessary",
   "main": "index.js",
   "author": "JaiGanesh",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "sharp": "^0.18.4"
+  }
 }

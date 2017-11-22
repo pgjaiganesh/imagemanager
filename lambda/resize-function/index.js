@@ -6,7 +6,7 @@ const S3 = new AWS.S3({
 });
 const Sharp = require('sharp');
 
-const BUCKET = process.env.BUCKET;
+const BUCKET = 'im3-imagebucket-1d5ox7axuw6rw';
 
 exports.handler = function(event, context, callback) {
   const key = event.queryStringParameters.key;

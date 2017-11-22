@@ -5,6 +5,14 @@ const config = require('config');
 const http = require('http');
 const https = require('https');
 
+const AWS = require('aws-sdk');
+const S3 = new AWS.S3({
+  signatureVersion: 'v4',
+});
+const Sharp = require('sharp');
+
+const BUCKET = 'im3-imagebucket-1d5ox7axuw6rw';
+
 exports.handler = (event, context, callback) => {
     const request = event.Records[0].cf.request;
     const queryString = request.querystring;
@@ -56,41 +64,73 @@ exports.handler = (event, context, callback) => {
                     Ex: path variable /images/100x100/webp/image.jpg
                     */
                     let key = path.substring(1);
-                    const templateUrl = APIGW_URL+key;
-                    console.log("API Call : %j",templateUrl);
+                    console.log("Required image :%s",key);
+                    /*
+                    parse the prefix, width, height and image name
+                    //Ex: key=images/200x200/webp/image.jpg
+                    */
+                    let prefix,originalKey,match,width,height,requiredFormat,imageName;
+                    let startIndex;
 
-                    https.get(templateUrl, (res) => {
-                        let content = '';
-                        res.on('data', (chunk) => { content += chunk; });
-                        res.on('end', () => {
-                            console.log("API Called :%s",content);
-                        });
-                        console.log("Time remaining2 :%s",context.getRemainingTimeInMillis());
+                    try {
+                      match = key.match(/(.*)\/(\d+)x(\d+)\/(.*)\/(.*)/);
+                      prefix = match[1];
+                      width = parseInt(match[2],10);
+                      height = parseInt(match[3],10);
+                      requiredFormat = match[4] == "jpg"?"jpeg":match[4];//correction for jpg required for 'Sharp'
+                      imageName = match[5];
+                      originalKey = prefix+"/"+imageName;
+                    }
+                    catch(err){
+                      //no prefix exist for image..
+                      console.log("no prefix present..");
+                      match = key.match(/(\d+)x(\d+)\/(.*)\/(.*)/);
+                      width = parseInt(match[1],10);
+                      height = parseInt(match[2],10);
+                      requiredFormat = match[3] == "jpg"?"jpeg":match[3];//correction for jpg required for 'Sharp'
+                      imageName = match[4];
+                      originalKey = imageName;
+                    }
 
-                        if(res.statusCode != 200){
-                          /*for all other conditions when the API GW request did not complete with
-                          success '200 Ok' fallback to the original image.
-                          Ex: from incoming url /images/100x100/webp/image.jpg fallback to 
-                          original key /images/image.jpg
-                          */
-                          try {
+                    console.log("Path prefix :%s",prefix);
+                    console.log("original key :%s",originalKey);
+                    console.log("requiredFormat :%s",requiredFormat);
+                    console.log("Width - Height: %d - %d",width,height);
+
+                    //get the source image file
+                    S3.getObject({Bucket: BUCKET, Key: originalKey}).promise()
+                      //perform the resize operation
+                      .then(data => Sharp(data.Body)
+                        .resize(width, height)
+                        .toFormat(requiredFormat)
+                        .toBuffer()
+                      )
+                      .then(buffer => {
+                        //save the resized object to S3 bucket with appropriate object key.
+                        S3.putObject({
+                          Body: buffer,
+                          Bucket: BUCKET,
+                          ContentType: 'image/'+requiredFormat,
+                          CacheControl: 'max-age=86400',
+                          Key: key,
+                          StorageClass: 'REDUCED_REDUNDANCY'
+                        }).promise();
+                        //return a success message
+                        callback(null, request);
+                      })
+                      .catch(err => {
+                        try {
                             let match = key.match(/(.*)\/(\d+)x(\d+)\/(.*)\/(.*)/);
                             request.uri = match[1]+"/"+match[5];
                           }
                           catch(err){
                             //no prefix exist for image..
-                            console.log("no prefix present..");
                             let match = key.match(/(\d+)x(\d+)\/(.*)\/(.*)/);
                             request.uri = "/"+match[4];
                           }
 
-                          console.log("Falling back to original url %s",request.uri);
                           callback(null, request);
-                        }
-                        else{
-                          callback(null, request);
-                        }
-                    });
+                      });
                 }
                 else{
                     //allow the request to pass through for CloudFront to fetch the image from bucket
