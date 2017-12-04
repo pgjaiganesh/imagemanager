@@ -45,6 +45,13 @@ Resources:
      MemorySize: 128
      Timeout: 3
      Role: !GetAtt EdgeLambdaRole.Arn
+     Policies:
+         Statement:
+             Action:
+               - s3:GetObject
+               - s3:PutObject
+             Resource: !Sub arn:aws:s3:::${ImageBucket}/*
+             Effect: Allow
 
   OriginRequestFunctionVersion:
     Type: "AWS::Lambda::Version"
