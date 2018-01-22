@@ -16,7 +16,7 @@ package: image
 dist:
 	mkdir -p dist && cd lambda/resize-function && zip -FS -q -r ../../dist/resize-function.zip *
 	mkdir -p dist && cd lambda/viewer-request-function && zip -FS -q -r ../../dist/viewer-request-function.zip *
-	mkdir -p dist && cd lambda/origin-request-function && zip -FS -q -r ../../dist/origin-request-function.zip *
+	mkdir -p dist && cd lambda/origin-response-function && zip -FS -q -r ../../dist/origin-response-function.zip *
 
 resize:
 	./bin/deploy

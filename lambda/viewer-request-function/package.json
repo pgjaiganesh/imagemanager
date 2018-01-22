@@ -4,5 +4,13 @@
   "description": "Lambda@Edge function to modify URI",
   "main": "index.js",
   "author": "JaiGanesh",
-  "license": "ISC"
+  "license": "ISC",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "dependencies": {
+    "querystring": "^0.2.0"
+  },
+  "devDependencies": {}
 }
